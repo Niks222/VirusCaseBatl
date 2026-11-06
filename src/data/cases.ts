@@ -214,6 +214,42 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['diamond'], weight: 50 },
     ]
   },
+  {
+    id: 'case-5050-bouquet-ring',
+    name: '50/50: Букет или Кольцо',
+    category: 'fifty',
+    price: 75,
+    rubPrice: 149,
+    badge: '50/50 ДЖЕКПОТ',
+    color: '#10b981',
+    caseImage: 'assets/cases/case_5050.png',
+    previewIcons: [
+      ALL_GIFTS['bouquet'].image,
+      ALL_GIFTS['ring'].image,
+    ],
+    drops: [
+      { item: ALL_GIFTS['bouquet'], weight: 50 },
+      { item: ALL_GIFTS['ring'], weight: 50 },
+    ]
+  },
+  {
+    id: 'case-5050-trophy',
+    name: '50/50: Роза или Кубок',
+    category: 'fifty',
+    price: 60,
+    rubPrice: 119,
+    badge: '50/50 КУБОК',
+    color: '#f59e0b',
+    caseImage: 'assets/cases/case_5050.png',
+    previewIcons: [
+      ALL_GIFTS['rose'].image,
+      ALL_GIFTS['trophy'].image,
+    ],
+    drops: [
+      { item: ALL_GIFTS['rose'], weight: 50 },
+      { item: ALL_GIFTS['trophy'], weight: 50 },
+    ]
+  },
 
   // --- ЛЕКТОР & BLACK SPRUIT (Top Exclusive) ---
   {
