@@ -14,7 +14,6 @@ import { BottomNav, TabType } from './components/BottomNav';
 import { ALL_CASES } from './data/cases';
 import { ALL_GIFTS } from './data/gifts';
 import { CaseItem, GiftItem, InventoryItem } from './types';
-import { soundFx } from './utils/audio';
 
 export const App: React.FC = () => {
   // Navigation & View state
@@ -28,7 +27,7 @@ export const App: React.FC = () => {
   const [balanceStars, setBalanceStars] = useState<number>(350); // Starting welcome bonus!
   const [balanceRub, setBalanceRub] = useState<number>(550);
 
-  // User inventory
+  // User inventory initialized with real gifts
   const [inventory, setInventory] = useState<InventoryItem[]>([
     {
       ...ALL_GIFTS['bear'],
@@ -46,7 +45,6 @@ export const App: React.FC = () => {
   const [activeCase, setActiveCase] = useState<CaseItem | null>(null);
   const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
-  const [isUpgradeOpen, setIsUpgradeOpen] = useState<boolean>(false);
   const [upgradePreselected, setUpgradePreselected] = useState<GiftItem | null>(null);
 
   // Initialize Telegram WebApp SDK if available
@@ -91,7 +89,6 @@ export const App: React.FC = () => {
 
   // Handle case win
   const handleCaseWin = (wonItem: GiftItem, action: 'keep' | 'sell') => {
-    // Deduct case price if not daily
     if (activeCase && !activeCase.isDaily) {
       if (currency === 'stars') {
         setBalanceStars((prev) => Math.max(0, prev - activeCase.price));
@@ -189,7 +186,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-24 text-white flex flex-col">
-      {/* Top Fixed Header */}
+      {/* Top Fixed Header with Telegram User Avatar */}
       <Header
         balanceStars={balanceStars}
         balanceRub={balanceRub}
@@ -206,10 +203,10 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-4xl w-full mx-auto px-3 md:px-4">
         {currentTab === 'cases' && (
           <>
-            {/* Lector BS Mascot Banner */}
+            {/* LECTOR BS Mascot Hero Banner */}
             <LectorBanner onBonusClick={() => setIsDepositOpen(true)} />
 
-            {/* Filter Navigation matching reference UI */}
+            {/* Filter Navigation matching RubUp reference UI */}
             <CategoryNav
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}

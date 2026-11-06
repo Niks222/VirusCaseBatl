@@ -14,7 +14,7 @@ const INITIAL_FEED: FeedItem[] = [
   { id: '1', userName: 'Alex_TG', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1', item: ALL_GIFTS['nft-doge'], caseName: 'Пёс Сопротивления' },
   { id: '2', userName: 'crypto_boss', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=2', item: ALL_GIFTS['stars-500'], caseName: 'Звёздный Шторм' },
   { id: '3', userName: 'Dmitry_99', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=3', item: ALL_GIFTS['ring'], caseName: 'Lector BS' },
-  { id: '4', userName: 'vlad_ton', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=4', item: ALL_GIFTS['nft-flamingo'], caseName: 'NFT-Кейс' },
+  { id: '4', userName: 'vlad_ton', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=4', item: ALL_GIFTS['nft-swiss-watch'], caseName: 'NFT-Кейс' },
   { id: '5', userName: 'Elena_V', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=5', item: ALL_GIFTS['diamond'], caseName: '50/50 Роза или Алмаз' },
   { id: '6', userName: 'shadow_bs', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=6', item: ALL_GIFTS['rocket'], caseName: 'Копилка' },
 ];
@@ -39,8 +39,8 @@ export const LiveFeed: React.FC = () => {
         caseName: 'Кейс',
       };
 
-      setItems(prev => [newItem, ...prev.slice(0, 14)]);
-    }, 4000);
+      setItems((prev) => [newItem, ...prev.slice(0, 14)]);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, []);
@@ -67,7 +67,7 @@ export const LiveFeed: React.FC = () => {
           <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">LIVE</span>
         </div>
 
-        {/* Horizontal scrolling strip */}
+        {/* Horizontal scrolling strip with REAL GIFT THUMBNAILS */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
           {items.map((drop) => (
             <div
@@ -76,7 +76,9 @@ export const LiveFeed: React.FC = () => {
                 drop.item.rarity
               )}`}
             >
-              <span className="text-lg filter drop-shadow">{drop.item.icon}</span>
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                <img src={drop.item.image} alt={drop.item.name} className="max-w-full max-h-full object-contain" />
+              </div>
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold text-white truncate max-w-[90px] leading-tight">
                   {drop.item.name}

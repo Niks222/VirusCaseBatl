@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CaseItem, GiftItem } from '../types';
-import { X, Sparkles, Volume2, ArrowRight, RefreshCw, ArrowUpRight, Check, HelpCircle } from 'lucide-react';
+import { X, Sparkles, RefreshCw, ArrowUpRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/audio';
 
@@ -32,7 +32,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   const [winningItem, setWinningItem] = useState<GiftItem | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [fastOpen, setFastOpen] = useState(false);
-  const [selectedWinAction, setSelectedWinAction] = useState<string | null>(null);
 
   const stripRef = useRef<HTMLDivElement>(null);
   const tickAudioTimerRef = useRef<number[]>([]);
@@ -73,7 +72,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
     setIsSpinning(false);
     setShowResult(false);
     setWinningItem(null);
-    setSelectedWinAction(null);
 
     return () => {
       tickAudioTimerRef.current.forEach((t) => clearTimeout(t));
@@ -105,18 +103,14 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
       return;
     }
 
-    // Normal Roulette Spin with deceleration
+    // Normal Roulette Spin with realistic deceleration
     if (stripRef.current) {
-      // Reset translation
       stripRef.current.style.transition = 'none';
       stripRef.current.style.transform = 'translateX(0px)';
 
-      // Trigger reflow
       void stripRef.current.offsetHeight;
 
-      // Random jitter inside the winning card (±35px)
-      const jitter = (Math.random() - 0.5) * 70;
-      // Container width is roughly 400-600px; center line is at containerWidth / 2
+      const jitter = (Math.random() - 0.5) * 60;
       const containerWidth = stripRef.current.parentElement?.clientWidth || 400;
       const targetOffset = -(WINNING_INDEX * ITEM_WIDTH + ITEM_WIDTH / 2 - containerWidth / 2 + jitter);
 
@@ -124,7 +118,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
       stripRef.current.style.transition = `transform ${durationMs}ms cubic-bezier(0.12, 0.8, 0.22, 1)`;
       stripRef.current.style.transform = `translateX(${targetOffset}px)`;
 
-      // Schedule realistic ticks
       playTicksSequence(durationMs);
 
       setTimeout(() => {
@@ -139,26 +132,24 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
     tickAudioTimerRef.current.forEach((t) => clearTimeout(t));
     tickAudioTimerRef.current = [];
 
-    // Exponential tick deceleration
     let elapsed = 0;
-    let step = 60; // start fast
+    let step = 60;
     while (elapsed < duration - 400) {
       const timer = window.setTimeout(() => {
         soundFx.playTick();
       }, elapsed);
       tickAudioTimerRef.current.push(timer);
       elapsed += step;
-      step = step * 1.055; // slow down
+      step = step * 1.055;
     }
   };
 
   const triggerVictory = (item: GiftItem) => {
     soundFx.playWin(item.rarity);
 
-    // Blast celebratory confetti
     confetti({
-      particleCount: 80,
-      spread: 70,
+      particleCount: 90,
+      spread: 75,
       origin: { y: 0.6 },
       colors: ['#8b5cf6', '#3b82f6', '#f59e0b', '#ec4899', '#10b981'],
     });
@@ -173,15 +164,15 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   const getRarityBadge = (rarity: string) => {
     switch (rarity) {
       case 'mythic':
-        return 'bg-red-500/20 text-red-400 border-red-500/40';
+        return 'bg-red-500/20 text-red-400 border-red-500/50';
       case 'nft':
-        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50';
       case 'legendary':
-        return 'bg-amber-500/20 text-amber-400 border-amber-500/40';
+        return 'bg-amber-500/20 text-amber-400 border-amber-500/50';
       case 'epic':
-        return 'bg-purple-500/20 text-purple-400 border-purple-500/40';
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/50';
       case 'rare':
-        return 'bg-sky-500/20 text-sky-400 border-sky-500/40';
+        return 'bg-sky-500/20 text-sky-400 border-sky-500/50';
       default:
         return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
     }
@@ -195,16 +186,22 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   const totalDropsWeight = caseItem.drops.reduce((acc, d) => acc + d.weight, 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-md animate-fadeIn">
       <div className="relative w-full max-w-xl max-h-[92vh] flex flex-col bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">{caseItem.previewIcons[0]}</span>
+        {/* Header with 3D Case Preview */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08] bg-[#161a30]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/20 bg-black/40">
+              <img
+                src={caseItem.caseImage}
+                alt={caseItem.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div>
               <h2 className="font-extrabold text-base text-white">{caseItem.name}</h2>
               <span className="text-[11px] text-gray-400 font-medium">
-                {caseItem.isDaily ? 'Ежедневный бесплатный подарок' : `Цена: ${costDisplay}`}
+                {caseItem.isDaily ? 'Ежедневный бесплатный подарок' : `Цена открытия: ${costDisplay}`}
               </span>
             </div>
           </div>
@@ -226,13 +223,13 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
           {/* Top & Bottom Center Pointer Indicators */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[14px] border-t-amber-400 z-30 filter drop-shadow-[0_2px_8px_rgba(251,191,36,0.8)]"></div>
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[14px] border-b-amber-400 z-30 filter drop-shadow-[0_-2px_8px_rgba(251,191,36,0.8)]"></div>
-          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-amber-400 via-purple-400 to-amber-400 z-20 pointer-events-none opacity-80"></div>
+          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-amber-400 via-purple-400 to-amber-400 z-20 pointer-events-none opacity-85"></div>
 
           {/* Vignette shadows at left and right edges */}
           <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0b0d18] to-transparent z-20 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0b0d18] to-transparent z-20 pointer-events-none"></div>
 
-          {/* Scrolling Items Strip */}
+          {/* Scrolling Items Strip with REAL Images */}
           <div className="w-full overflow-hidden">
             <div
               ref={stripRef}
@@ -246,19 +243,26 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
                   className="shrink-0 px-1.5"
                 >
                   <div
-                    className={`h-36 rounded-xl flex flex-col items-center justify-between p-2.5 border bg-gradient-to-b from-[#181d36] to-[#121424] transition-all ${getRarityBadge(
+                    className={`h-36 rounded-xl flex flex-col items-center justify-between p-2 border bg-gradient-to-b from-[#181d36] to-[#121424] transition-all ${getRarityBadge(
                       item.rarity
                     )}`}
                   >
-                    <span className="text-[10px] font-black uppercase tracking-wider truncate w-full text-center">
+                    <span className="text-[9px] font-black uppercase tracking-wider truncate w-full text-center">
                       {item.rarity}
                     </span>
-                    <span className="text-4xl filter drop-shadow transform hover:scale-110 transition-transform">
-                      {item.icon}
-                    </span>
+
+                    {/* Real Transparent Image of Gift */}
+                    <div className="w-16 h-16 flex items-center justify-center p-1">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="max-w-full max-h-full object-contain filter drop-shadow hover:scale-110 transition-transform"
+                      />
+                    </div>
+
                     <div className="w-full text-center">
                       <p className="text-[11px] font-bold text-white truncate">{item.name}</p>
-                      <p className="text-[10px] text-amber-300 font-bold">
+                      <p className="text-[10px] text-amber-300 font-bold font-gaming">
                         {currency === 'stars' ? `${item.price} ⭐` : `${item.rubPrice} ₽`}
                       </p>
                     </div>
@@ -294,7 +298,7 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
           </button>
         </div>
 
-        {/* Drops Preview List with Probabilities */}
+        {/* Drops Preview List with Real Images */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2 max-h-[220px]">
           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
@@ -309,7 +313,13 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
                   key={idx}
                   className="flex items-center gap-2.5 p-2 rounded-xl bg-[#171b30] border border-white/[0.06] hover:border-purple-500/30 transition-colors"
                 >
-                  <span className="text-2xl">{drop.item.icon}</span>
+                  <div className="w-9 h-9 shrink-0 flex items-center justify-center p-0.5 rounded-lg bg-black/40 border border-white/10">
+                    <img
+                      src={drop.item.image}
+                      alt={drop.item.name}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-white truncate">{drop.item.name}</p>
                     <div className="flex items-center justify-between text-[10px] text-gray-400">
@@ -325,13 +335,13 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
           </div>
         </div>
 
-        {/* VICTORY POPUP OVERLAY */}
+        {/* VICTORY POPUP OVERLAY WITH REAL GIFT IMAGE */}
         {showResult && winningItem && (
           <div className="absolute inset-0 z-40 bg-[#0d0f1ee6] backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-fadeIn">
-            {/* Lector Mascot Approved Emblem */}
-            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-xs font-bold uppercase tracking-wider mb-2">
+            {/* Lector Mascot Approved Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-xs font-bold uppercase tracking-wider mb-2">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>LECTOR BS • ДРОП ПОЛУЧЕН!</span>
+              <span>ОДОБРЕНО ЛЕКТОРОМ (BS)</span>
             </div>
 
             <h3 className="font-gaming font-extrabold text-2xl text-white tracking-wide">
@@ -354,8 +364,12 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
                 }}
               ></div>
 
-              <div className="relative w-28 h-28 rounded-2xl bg-gradient-to-b from-[#212745] to-[#14172a] border-2 border-white/20 flex items-center justify-center text-6xl shadow-2xl animate-bounce">
-                {winningItem.icon}
+              <div className="relative w-28 h-28 rounded-2xl bg-gradient-to-b from-[#212745] to-[#14172a] border-2 border-white/20 flex items-center justify-center p-3 shadow-2xl">
+                <img
+                  src={winningItem.image}
+                  alt={winningItem.name}
+                  className="max-w-full max-h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] animate-bounce"
+                />
               </div>
 
               <div className="mt-3">

@@ -4,8 +4,8 @@ export interface GiftItem {
   id: string;
   name: string;
   subtitle?: string;
-  icon: string;
-  image?: string;
+  image: string; // Path to real PNG/WEBP asset
+  iconFallback?: string;
   price: number; // Value in Stars (⭐)
   rubPrice: number; // Value in Rubles (₽)
   rarity: RarityType;
@@ -26,7 +26,8 @@ export interface CaseItem {
   price: number; // In Stars
   rubPrice: number; // In Rubles
   oldPrice?: number;
-  previewIcons: string[];
+  caseImage: string; // 3D case artwork image
+  previewIcons: string[]; // URLs or fallbacks
   drops: CaseDropRate[];
   badge?: string;
   isDaily?: boolean;
@@ -60,12 +61,6 @@ export interface LiveDrop {
   item: GiftItem;
   caseName: string;
   time: string;
-}
-
-export interface BattleRound {
-  round: number;
-  playerDrop: GiftItem;
-  opponentDrop: GiftItem;
 }
 
 export interface CaseBattleRoom {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GiftItem, InventoryItem } from '../types';
 import { ALL_GIFTS } from '../data/gifts';
-import { Zap, X, ArrowUpRight, Sparkles, RefreshCw } from 'lucide-react';
+import { Zap, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/audio';
 
@@ -32,8 +32,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
     ALL_GIFTS['ring'],
     ALL_GIFTS['rocket'],
     ALL_GIFTS['diamond'],
-    ALL_GIFTS['nft-flamingo'],
     ALL_GIFTS['nft-doge'],
+    ALL_GIFTS['nft-swiss-watch'],
+    ALL_GIFTS['nft-plush-pepe'],
+    ALL_GIFTS['nft-heroic-helmet'],
     ALL_GIFTS['stars-1000'],
   ];
 
@@ -49,11 +51,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
     ? currency === 'stars'
       ? selectedInputItem.price
       : selectedInputItem.rubPrice
-    : 30; // fallback base bet
+    : 30;
 
   const targetPrice = currency === 'stars' ? targetItem.price : targetItem.rubPrice;
 
-  // Calculate win chance: (input / target) * 92%, min 3%, max 82%
   const rawChance = (inputPrice / targetPrice) * 92;
   const chancePercent = Math.min(82, Math.max(3, parseFloat(rawChance.toFixed(1))));
 
@@ -64,28 +65,21 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 
     soundFx.playTick();
 
-    // Determine if win
     const isWin = Math.random() * 100 <= chancePercent;
-
-    // Angle of winning sector is [0, (chancePercent / 100) * 360]
     const winSectorDegrees = (chancePercent / 100) * 360;
 
     let targetStopDeg: number;
     if (isWin) {
-      // Pick within [5, winSectorDegrees - 5]
       targetStopDeg = 5 + Math.random() * Math.max(1, winSectorDegrees - 10);
     } else {
-      // Pick outside win sector
       targetStopDeg = winSectorDegrees + 10 + Math.random() * (350 - winSectorDegrees);
     }
 
-    // 5-7 full spins
     const totalSpins = 5 * 360;
     const finalAngle = totalSpins + targetStopDeg;
 
     setWheelAngle(finalAngle);
 
-    // Audio ticks during spin
     const interval = setInterval(() => {
       soundFx.playTick(1.1);
     }, 180);
@@ -118,7 +112,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-400" />
-            <h2 className="font-extrabold text-base text-white">Апгрейд Подарков</h2>
+            <h2 className="font-extrabold text-base text-white">Апгрейд Подарков Telegram</h2>
           </div>
           <button
             onClick={() => {
@@ -133,17 +127,19 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         </div>
 
         <div className="p-4 overflow-y-auto space-y-4">
-          {/* Top selection: Input Item -> Upgrade Arrow -> Target Item */}
+          {/* Top selection with REAL IMAGES */}
           <div className="grid grid-cols-2 gap-3 items-center relative">
             {/* Input Card */}
-            <div className="bg-[#171a2e] border border-white/10 rounded-2xl p-3 text-center">
+            <div className="bg-[#171a2e] border border-white/10 rounded-2xl p-3 text-center flex flex-col items-center">
               <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">
                 Ваш предмет
               </span>
               {selectedInputItem ? (
                 <>
-                  <span className="text-3xl block my-1">{selectedInputItem.icon}</span>
-                  <p className="text-xs font-bold text-white truncate">{selectedInputItem.name}</p>
+                  <div className="w-16 h-16 my-1 flex items-center justify-center">
+                    <img src={selectedInputItem.image} alt={selectedInputItem.name} className="max-w-full max-h-full object-contain filter drop-shadow" />
+                  </div>
+                  <p className="text-xs font-bold text-white truncate max-w-[120px]">{selectedInputItem.name}</p>
                   <p className="text-[11px] text-amber-300 font-extrabold font-gaming">
                     {currency === 'stars' ? `${selectedInputItem.price} ⭐` : `${selectedInputItem.rubPrice} ₽`}
                   </p>
@@ -157,12 +153,14 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             </div>
 
             {/* Target Card */}
-            <div className="bg-[#171a2e] border border-purple-500/40 rounded-2xl p-3 text-center shadow-lg shadow-purple-600/10">
+            <div className="bg-[#171a2e] border border-purple-500/40 rounded-2xl p-3 text-center flex flex-col items-center shadow-lg shadow-purple-600/10">
               <span className="text-[10px] text-purple-300 uppercase font-bold block mb-1">
                 Цель апгрейда
               </span>
-              <span className="text-3xl block my-1 animate-pulse">{targetItem.icon}</span>
-              <p className="text-xs font-bold text-white truncate">{targetItem.name}</p>
+              <div className="w-16 h-16 my-1 flex items-center justify-center animate-pulse">
+                <img src={targetItem.image} alt={targetItem.name} className="max-w-full max-h-full object-contain filter drop-shadow" />
+              </div>
+              <p className="text-xs font-bold text-white truncate max-w-[120px]">{targetItem.name}</p>
               <p className="text-[11px] text-amber-300 font-extrabold font-gaming">
                 {targetPrice} {currency === 'stars' ? '⭐' : '₽'}
               </p>
@@ -170,11 +168,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           </div>
 
           {/* Circular Wheel Gauge */}
-          <div className="relative py-4 flex flex-col items-center justify-center">
-            {/* SVG Circular Chart */}
-            <div className="relative w-48 h-48 flex items-center justify-center">
+          <div className="relative py-3 flex flex-col items-center justify-center">
+            <div className="relative w-44 h-44 flex items-center justify-center">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                {/* Background full circle (red losing sector) */}
                 <circle
                   cx="50"
                   cy="50"
@@ -184,7 +180,6 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                   strokeWidth="8"
                   opacity="0.3"
                 />
-                {/* Winning sector arc (green/amber) */}
                 <circle
                   cx="50"
                   cy="50"
@@ -197,7 +192,6 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                 />
               </svg>
 
-              {/* Center pointer needle spinning */}
               <div
                 className="absolute inset-0 flex items-center justify-center transition-transform"
                 style={{
@@ -206,11 +200,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                   transitionTimingFunction: 'cubic-bezier(0.12, 0.8, 0.22, 1)',
                 }}
               >
-                <div className="w-1.5 h-20 bg-gradient-to-t from-white to-amber-400 rounded-full shadow-lg shadow-amber-400 -translate-y-8"></div>
-                <div className="absolute w-5 h-5 rounded-full bg-white border-2 border-amber-400"></div>
+                <div className="w-1.5 h-16 bg-gradient-to-t from-white to-amber-400 rounded-full shadow-lg shadow-amber-400 -translate-y-7"></div>
+                <div className="absolute w-4 h-4 rounded-full bg-white border-2 border-amber-400"></div>
               </div>
 
-              {/* Chance display in center */}
               <div className="absolute flex flex-col items-center pointer-events-none">
                 <span className="font-gaming font-black text-2xl text-white">
                   {chancePercent}%
@@ -243,7 +236,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             </div>
           )}
 
-          {/* Target Items Carousel Selector */}
+          {/* Target Items Carousel Selector with REAL IMAGES */}
           <div>
             <label className="text-xs text-gray-400 font-bold block mb-2">
               Выберите целевой подарок:
@@ -257,17 +250,19 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                     setTargetItem(opt);
                     setResultState('idle');
                   }}
-                  className={`shrink-0 p-2.5 rounded-xl border text-center transition-all ${
+                  className={`shrink-0 p-2 rounded-xl border text-center transition-all flex flex-col items-center justify-between ${
                     targetItem.id === opt.id
                       ? 'border-purple-500 bg-purple-950/40 shadow-md shadow-purple-600/30'
                       : 'border-white/10 bg-[#161a2e] hover:border-white/20'
                   }`}
                 >
-                  <span className="text-2xl block">{opt.icon}</span>
-                  <span className="text-[10px] text-white font-bold block truncate max-w-[70px]">
+                  <div className="w-10 h-10 flex items-center justify-center my-0.5">
+                    <img src={opt.image} alt={opt.name} className="max-w-full max-h-full object-contain" />
+                  </div>
+                  <span className="text-[10px] text-white font-bold block truncate max-w-[75px]">
                     {opt.name}
                   </span>
-                  <span className="text-[9px] text-amber-300 font-semibold block">
+                  <span className="text-[9px] text-amber-300 font-semibold block font-gaming">
                     {currency === 'stars' ? `${opt.price} ⭐` : `${opt.rubPrice} ₽`}
                   </span>
                 </button>

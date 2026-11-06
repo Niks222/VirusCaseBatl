@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { CaseItem, GiftItem } from '../types';
 import { ALL_CASES } from '../data/cases';
-import { ALL_GIFTS } from '../data/gifts';
-import { Swords, Trophy, Play, User, Bot, Sparkles, RefreshCw, ChevronRight } from 'lucide-react';
+import { Swords, Trophy, User, Sparkles, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/audio';
 
@@ -98,13 +97,12 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             // Player won all drops!
             soundFx.playWin('legendary');
             confetti({
-              particleCount: 100,
+              particleCount: 110,
               spread: 90,
               origin: { y: 0.5 },
             });
             onWinBattle([...nextP, ...nextB], finalPVal + finalBVal);
           } else {
-            // Lost
             soundFx.playTick(0.8);
           }
         }, 800);
@@ -128,9 +126,9 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
 
   return (
     <div className="space-y-4 my-2">
-      {/* Title & Banner */}
+      {/* Title & Mascot Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-950/40 via-[#181a2e] to-purple-950/40 border border-red-500/30 p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 text-red-400 font-extrabold text-xs uppercase tracking-wider mb-1">
               <Swords className="w-4 h-4 text-red-400" />
@@ -140,11 +138,15 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
               КЕЙС БАТЛЫ
             </h2>
             <p className="text-xs text-gray-300 mt-0.5">
-              Сразись 1 на 1 против LECTOR BOT или игроков. Чей дроп дороже — тот забирает общий банк!
+              Сразись 1 на 1 против главного маскота <span className="text-purple-300 font-bold">LECTOR BS</span>. Чей дроп дороже — тот забирает общий банк подарков!
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-2xl">
-            ⚔️
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-red-500/50 shrink-0 shadow-lg shadow-red-600/30">
+            <img
+              src="assets/lector_portrait.jpg"
+              alt="Lector Mascot"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>
@@ -155,7 +157,8 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             1. Выберите кейс для батла:
           </h3>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {/* Real 3D Cases Grid Selector */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {ALL_CASES.filter((c) => !c.isDaily).map((c) => (
               <div
                 key={c.id}
@@ -163,15 +166,21 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
                   soundFx.playClick();
                   setSelectedCase(c);
                 }}
-                className={`cursor-pointer p-3 rounded-xl border transition-all ${
+                className={`cursor-pointer p-2.5 rounded-xl border transition-all flex flex-col items-center justify-between ${
                   selectedCase.id === c.id
-                    ? 'border-purple-500 bg-purple-950/30 shadow-lg shadow-purple-600/20'
+                    ? 'border-purple-500 bg-purple-950/40 shadow-lg shadow-purple-600/30 scale-105'
                     : 'border-white/[0.06] bg-[#171a2e] hover:border-white/20'
                 }`}
               >
-                <div className="text-2xl text-center mb-1">{c.previewIcons[0]}</div>
-                <div className="font-bold text-xs text-center text-white truncate">{c.name}</div>
-                <div className="text-[11px] text-center text-amber-300 font-semibold">
+                <div className="w-16 h-16 rounded-lg overflow-hidden my-1">
+                  <img
+                    src={c.caseImage}
+                    alt={c.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="font-bold text-xs text-center text-white truncate w-full">{c.name}</div>
+                <div className="text-[11px] text-center text-amber-300 font-bold font-gaming">
                   {currency === 'stars' ? `${c.price} ⭐` : `${c.rubPrice} ₽`}
                 </div>
               </div>
@@ -212,7 +221,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             className="w-full py-3.5 rounded-xl font-gaming font-extrabold text-sm uppercase tracking-wider text-white bg-gradient-to-r from-red-600 via-purple-600 to-indigo-600 hover:opacity-95 active:scale-98 shadow-xl shadow-purple-600/30 border border-purple-400/40 flex items-center justify-center gap-2"
           >
             <Swords className="w-4 h-4" />
-            <span>Начать Батл против Lector Bot</span>
+            <span>Начать Батл против Lector BS</span>
           </button>
         </div>
       ) : (
@@ -242,7 +251,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
               VS
             </div>
 
-            {/* Left: Player */}
+            {/* Left: Player (You) */}
             <div className="bg-[#171b30] border border-blue-500/30 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300">
@@ -256,34 +265,36 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
                 </div>
               </div>
 
-              {/* Player Drops history */}
+              {/* Player Drops history with REAL IMAGES */}
               <div className="w-full space-y-1.5 min-h-[140px] flex flex-col justify-center">
                 {playerDrops.map((drop, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between p-2 rounded-lg bg-[#202542] border border-blue-400/20 animate-fadeIn"
                   >
-                    <span className="text-xl">{drop.icon}</span>
+                    <div className="w-7 h-7 flex items-center justify-center">
+                      <img src={drop.image} alt={drop.name} className="max-w-full max-h-full object-contain" />
+                    </div>
                     <span className="text-xs font-bold text-white truncate max-w-[70px]">
                       {drop.name}
                     </span>
-                    <span className="text-[10px] text-amber-300 font-bold">
+                    <span className="text-[10px] text-amber-300 font-bold font-gaming">
                       +{currency === 'stars' ? drop.price : drop.rubPrice}
                     </span>
                   </div>
                 ))}
                 {currentSpinning && (
-                  <div className="p-3 text-center text-2xl animate-spin-slow">
-                    🎲
+                  <div className="p-3 text-center flex justify-center">
+                    <img src={selectedCase.caseImage} alt="spinning" className="w-12 h-12 object-contain animate-bounce" />
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Right: Opponent (Lector Bot) */}
-            <div className="bg-[#171b30] border border-red-500/30 rounded-xl p-3 flex flex-col items-center">
+            {/* Right: Opponent (Lector BS Mascot Bot) */}
+            <div className="bg-[#171b30] border border-purple-500/40 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-purple-400">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-purple-400">
                   <img
                     src="assets/lector_portrait.jpg"
                     alt="Lector Bot"
@@ -291,32 +302,34 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-xs font-bold text-white block truncate">Lector BS (Bot)</span>
+                  <span className="text-xs font-bold text-purple-200 block truncate">LECTOR BS (Маскот)</span>
                   <span className="text-[11px] text-amber-300 font-extrabold font-gaming">
                     {botTotalValue} {currency === 'stars' ? '⭐' : '₽'}
                   </span>
                 </div>
               </div>
 
-              {/* Bot Drops history */}
+              {/* Bot Drops history with REAL IMAGES */}
               <div className="w-full space-y-1.5 min-h-[140px] flex flex-col justify-center">
                 {botDrops.map((drop, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-2 rounded-lg bg-[#202542] border border-red-400/20 animate-fadeIn"
+                    className="flex items-center justify-between p-2 rounded-lg bg-[#202542] border border-purple-400/20 animate-fadeIn"
                   >
-                    <span className="text-xl">{drop.icon}</span>
+                    <div className="w-7 h-7 flex items-center justify-center">
+                      <img src={drop.image} alt={drop.name} className="max-w-full max-h-full object-contain" />
+                    </div>
                     <span className="text-xs font-bold text-white truncate max-w-[70px]">
                       {drop.name}
                     </span>
-                    <span className="text-[10px] text-amber-300 font-bold">
+                    <span className="text-[10px] text-amber-300 font-bold font-gaming">
                       +{currency === 'stars' ? drop.price : drop.rubPrice}
                     </span>
                   </div>
                 ))}
                 {currentSpinning && (
-                  <div className="p-3 text-center text-2xl animate-spin-slow">
-                    🎲
+                  <div className="p-3 text-center flex justify-center">
+                    <img src={selectedCase.caseImage} alt="spinning" className="w-12 h-12 object-contain animate-bounce" />
                   </div>
                 )}
               </div>
@@ -336,19 +349,19 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
                     ВЫ ЗАБРАЛИ ВЕСЬ КУШ!
                   </h3>
                   <p className="text-xs text-gray-300">
-                    Все {playerDrops.length + botDrops.length} предметов отправлены в ваш инвентарь (стоимость: +{playerTotalValue + botTotalValue} {currency === 'stars' ? '⭐' : '₽'})
+                    Все {playerDrops.length + botDrops.length} подарков отправлены в ваш инвентарь (общая стоимость: +{playerTotalValue + botTotalValue} {currency === 'stars' ? '⭐' : '₽'})
                   </p>
                 </>
               ) : (
                 <>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-extrabold uppercase">
-                    <span>ПОРАЖЕНИЕ</span>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-extrabold uppercase">
+                    <span>ЛЕКТОР ЗАБРАЛ ЭТОТ РАУНД</span>
                   </div>
                   <h3 className="font-gaming font-extrabold text-xl text-white">
-                    LECTOR BOT ВЫИГРАЛ ЭТОТ РАУНД
+                    «НЕ В ЭТОТ РАЗ, БРО»
                   </h3>
                   <p className="text-xs text-gray-300">
-                    В этот раз удача была на стороне бота. Попробуйте еще раз!
+                    Лектор Black Spruit оказался удачливее. Реванш ждет!
                   </p>
                 </>
               )}

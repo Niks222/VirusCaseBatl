@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { InventoryItem } from '../types';
-import { X, Package, Send, DollarSign, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Package, Send, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
 interface InventoryModalProps {
@@ -111,11 +111,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
           )}
         </div>
 
-        {/* Inventory Items Grid */}
+        {/* Inventory Items Grid with REAL IMAGES */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {inventory.length === 0 ? (
             <div className="py-16 text-center space-y-3">
-              <span className="text-5xl block animate-bounce">🎁</span>
+              <div className="w-16 h-16 mx-auto flex items-center justify-center animate-bounce">
+                <img src="assets/gifts/bear.png" alt="Empty" className="w-full h-full object-contain opacity-60" />
+              </div>
               <p className="font-gaming font-bold text-sm text-gray-300">
                 Ваш инвентарь пока пуст
               </p>
@@ -141,8 +143,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                     </span>
                   </div>
 
-                  <div className="text-4xl text-center my-2 filter drop-shadow">
-                    {item.icon}
+                  {/* Real Transparent Image of Gift */}
+                  <div className="w-full h-20 flex items-center justify-center my-2 p-1">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="max-w-full max-h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
+                    />
                   </div>
 
                   <div className="text-center mb-2">
@@ -184,7 +191,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
         {withdrawTargetItem && (
           <div className="absolute inset-0 z-30 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
             <div className="w-full max-w-sm bg-[#161a30] border border-purple-500/40 rounded-2xl p-5 text-center shadow-2xl">
-              <span className="text-4xl block mb-2">{withdrawTargetItem.icon}</span>
+              <div className="w-20 h-20 mx-auto mb-2 flex items-center justify-center">
+                <img src={withdrawTargetItem.image} alt={withdrawTargetItem.name} className="max-w-full max-h-full object-contain" />
+              </div>
               <h3 className="font-gaming font-extrabold text-base text-white">
                 Вывод подарка в Telegram
               </h3>
