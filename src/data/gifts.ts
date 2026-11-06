@@ -3,7 +3,6 @@ import { GiftItem } from '../types';
 export const ALL_GIFTS: Record<string, GiftItem> = {
   // ==========================================
   // 1. ОФИЦИАЛЬНЫЕ НЕ-NFT ПОДАРКИ TELEGRAM (Фото 1 и 2)
-  // Точные официальные цены в Звёздах (⭐)
   // ==========================================
   'heart-box': {
     id: 'heart-box',
@@ -118,12 +117,11 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
 
   // ==========================================
   // 2. РЕСЕЙЛ NFT ПОДАРКИ TELEGRAM (Фото 3, 4, 5)
-  // Реальные цены вторичного рынка Telegram Stars
   // ==========================================
   'snoop-cigar': {
     id: 'snoop-cigar',
     name: 'Snoop Cigar',
-    subtitle: 'Telegram Resale NFT #1',
+    subtitle: 'Telegram Resale NFT',
     image: 'assets/gifts/snoop_cigar.png',
     price: 1321,
     rubPrice: 2490,
@@ -353,8 +351,7 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
   },
 
   // ==========================================
-  // 3. ОРИГИНАЛЬНЫЕ FRAGMENT NFT (Высшая ценность)
-  // Реальный Floor Price на Fragment в TON / Stars
+  // 3. ОРИГИНАЛЬНЫЕ FRAGMENT NFT (Реальный Floor Price)
   // ==========================================
   'nft-doge': {
     id: 'nft-doge',
@@ -424,33 +421,7 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
   },
 
   // ==========================================
-  // 4. МАСКОТ LECTOR BLACK SPRUIT ЭКСКЛЮЗИВЫ
-  // ==========================================
-  'nft-lector-halo': {
-    id: 'nft-lector-halo',
-    name: 'Нимб Лектора (BS Secret)',
-    subtitle: 'МАСКОТ ЭКСКЛЮЗИВ',
-    image: 'assets/lector_portrait.jpg',
-    price: 15000,
-    rubPrice: 29900,
-    rarity: 'mythic',
-    category: 'exclusive',
-    isNft: true,
-  },
-  'nft-lector-mask': {
-    id: 'nft-lector-mask',
-    name: 'Маска Лектора Black Spruit',
-    subtitle: 'ДЖЕКПОТ АРТЕФАКТ',
-    image: 'assets/lector_full.png',
-    price: 25000,
-    rubPrice: 49900,
-    rarity: 'mythic',
-    category: 'exclusive',
-    isNft: true,
-  },
-
-  // ==========================================
-  // 5. ПАКИ ЗВЁЗД TELEGRAM (⭐)
+  // 4. ПАКИ ЗВЁЗД TELEGRAM (⭐)
   // ==========================================
   'stars-15': {
     id: 'stars-15',

@@ -226,18 +226,19 @@ export const ALL_CASES: CaseItem[] = [
     color: '#f59e0b',
     caseImage: 'assets/cases/case_lector_bs.png',
     previewIcons: [
-      ALL_GIFTS['nft-lector-halo'].image,
-      ALL_GIFTS['nft-lector-mask'].image,
       ALL_GIFTS['nft-doge'].image,
+      ALL_GIFTS['nft-cap'].image,
+      ALL_GIFTS['nft-plush-pepe'].image,
       ALL_GIFTS['stars-5000'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['snoop-cigar'], weight: 40 },
+      { item: ALL_GIFTS['snoop-cigar'], weight: 35 },
       { item: ALL_GIFTS['nft-swiss-watch'], weight: 25 },
-      { item: ALL_GIFTS['nft-doge'], weight: 15 },
-      { item: ALL_GIFTS['stars-5000'], weight: 10 },
-      { item: ALL_GIFTS['nft-lector-halo'], weight: 7 },
-      { item: ALL_GIFTS['nft-lector-mask'], weight: 3 },
+      { item: ALL_GIFTS['nft-heroic-helmet'], weight: 15 },
+      { item: ALL_GIFTS['nft-plush-pepe'], weight: 10 },
+      { item: ALL_GIFTS['stars-5000'], weight: 8 },
+      { item: ALL_GIFTS['nft-cap'], weight: 4 },
+      { item: ALL_GIFTS['nft-doge'], weight: 3 },
     ]
   },
   {
