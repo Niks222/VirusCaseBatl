@@ -12,7 +12,8 @@ import {
   updateWithdrawalStatus,
   updateBalance,
   getStats,
-  getOrCreateUser
+  getOrCreateUser,
+  createWithdrawal
 } from './db.js';
 
 dotenv.config();
@@ -257,36 +258,76 @@ bot.callbackQuery('admin_view_pending', async (ctx) => {
   }
 });
 
+bot.on('message:web_app_data', async (ctx) => {
+  try {
+    const raw = ctx.message.web_app_data?.data;
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.type === 'WITHDRAW') {
+      const withdrawId = data.id || Math.random().toString(36).substring(2, 10).toUpperCase();
+      createWithdrawal({
+        id: withdrawId,
+        userId: String(ctx.from?.id || data.userId || ''),
+        username: ctx.from?.username || data.username || '',
+        targetUsername: data.targetUsername || '',
+        itemId: data.itemId || withdrawId,
+        itemName: data.itemName || 'Подарок',
+        itemPrice: Number(data.itemPrice) || 0,
+        fee: Number(data.fee) || 25,
+      });
+      const record = getWithdrawalById(withdrawId);
+      if (record) {
+        notifyAdminsAboutWithdrawal(record).catch(() => {});
+      }
+      await ctx.reply(`✅ <b>Заявка на вывод подарка принята!</b>\n\n🆔 <b>Заявка:</b> <code>#${withdrawId}</code>\n🎁 <b>Подарок:</b> <b>${data.itemName}</b>\n🎯 <b>Получатель:</b> @${data.targetUsername}\n💰 <b>Комиссия:</b> <b>25 ⭐</b> (Оплачена)\n\nАдминистратор передаст подарок в личные сообщения Telegram.`, { parse_mode: 'HTML' });
+    }
+  } catch {}
+});
+
 bot.callbackQuery(/^approve_w_(.+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
   const userId = ctx.from?.id;
   if (!checkIsAdmin(userId)) return;
 
   const withdrawId = ctx.match[1];
-  const item = getWithdrawalById(withdrawId);
+  let item = getWithdrawalById(withdrawId);
   if (!item) {
-    return ctx.reply(`Заявка #${withdrawId} не найдена.`);
+    const msgText = ctx.callbackQuery.message?.text || '';
+    const userMatch = msgText.match(/ID:\s*<code>?(\d+)<\/code>?/);
+    const targetMatch = msgText.match(/Получатель в TG:\s*@?([A-Za-z0-9_]+)/);
+    const itemMatch = msgText.match(/Подарок:\s*(.+)/);
+    const priceMatch = msgText.match(/Стоимость:\s*(\d+)/);
+
+    createWithdrawal({
+      id: withdrawId,
+      userId: userMatch ? userMatch[1] : '',
+      username: '',
+      targetUsername: targetMatch ? targetMatch[1] : '',
+      itemId: withdrawId,
+      itemName: itemMatch ? itemMatch[1].replace(/<[^>]+>/g, '').trim() : 'Telegram Подарок',
+      itemPrice: priceMatch ? Number(priceMatch[1]) : 0,
+      fee: 25,
+    });
+    item = getWithdrawalById(withdrawId);
   }
 
   updateWithdrawalStatus(withdrawId, 'completed');
 
   try {
     await ctx.editMessageText(
-      ctx.callbackQuery.message?.text + `\n\n✅ <b>ВЫПОЛНЕНО:</b> Подарок успешно передан!`,
+      (ctx.callbackQuery.message?.text || '') + `\n\n✅ <b>ВЫПОЛНЕНО:</b> Подарок успешно передан!`,
       { parse_mode: 'HTML' }
     );
-  } catch {
-  }
+  } catch {}
 
-  if (item.user_id && /^\d+$/.test(item.user_id)) {
+  if (item && item.user_id && /^\d+$/.test(item.user_id)) {
     try {
       await bot.api.sendMessage(
         item.user_id,
         `🎉 <b>Ваш подарок отправлен!</b>\n\n🎁 <b>${item.item_name}</b> был успешно передан на аккаунт @${String(item.target_username).replace('@', '')}!\nСпасибо за игру в Lector Cases.`,
         { parse_mode: 'HTML' }
       );
-    } catch {
-    }
+    } catch {}
   }
 });
 
@@ -296,35 +337,49 @@ bot.callbackQuery(/^reject_w_(.+)$/, async (ctx) => {
   if (!checkIsAdmin(userId)) return;
 
   const withdrawId = ctx.match[1];
-  const item = getWithdrawalById(withdrawId);
+  let item = getWithdrawalById(withdrawId);
   if (!item) {
-    return ctx.reply(`Заявка #${withdrawId} не найдена.`);
+    const msgText = ctx.callbackQuery.message?.text || '';
+    const userMatch = msgText.match(/ID:\s*<code>?(\d+)<\/code>?/);
+    const targetMatch = msgText.match(/Получатель в TG:\s*@?([A-Za-z0-9_]+)/);
+    const itemMatch = msgText.match(/Подарок:\s*(.+)/);
+    const priceMatch = msgText.match(/Стоимость:\s*(\d+)/);
+
+    createWithdrawal({
+      id: withdrawId,
+      userId: userMatch ? userMatch[1] : '',
+      username: '',
+      targetUsername: targetMatch ? targetMatch[1] : '',
+      itemId: withdrawId,
+      itemName: itemMatch ? itemMatch[1].replace(/<[^>]+>/g, '').trim() : 'Telegram Подарок',
+      itemPrice: priceMatch ? Number(priceMatch[1]) : 0,
+      fee: 25,
+    });
+    item = getWithdrawalById(withdrawId);
   }
 
   updateWithdrawalStatus(withdrawId, 'rejected');
 
-  const fee = item.fee || 25;
-  if (item.user_id) {
+  const fee = item?.fee || 25;
+  if (item?.user_id) {
     updateBalance(item.user_id, fee, 'refund', `Возврат комиссии за вывод #${withdrawId}`);
   }
 
   try {
     await ctx.editMessageText(
-      ctx.callbackQuery.message?.text + `\n\n❌ <b>ОТКЛОНЕНО:</b> Комиссия ${fee} ⭐ возвращена игроку.`,
+      (ctx.callbackQuery.message?.text || '') + `\n\n❌ <b>ОТКЛОНЕНО:</b> Комиссия ${fee} ⭐ возвращена игроку.`,
       { parse_mode: 'HTML' }
     );
-  } catch {
-  }
+  } catch {}
 
-  if (item.user_id && /^\d+$/.test(item.user_id)) {
+  if (item?.user_id && /^\d+$/.test(item.user_id)) {
     try {
       await bot.api.sendMessage(
         item.user_id,
         `⚠️ <b>Заявка на вывод подарка #${withdrawId} отклонена.</b>\n\nПодарок: <b>${item.item_name}</b>.\nКомиссия <b>${fee} ⭐</b> возвращена на ваш баланс.`,
         { parse_mode: 'HTML' }
       );
-    } catch {
-    }
+    } catch {}
   }
 });
 

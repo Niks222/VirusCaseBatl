@@ -137,11 +137,11 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
               Сразись 1 на 1 против главного маскота <span className="text-purple-300 font-bold">LECTOR BS</span>. Чей дроп дороже — тот забирает общий банк подарков!
             </p>
           </div>
-          <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-black/60 flex items-end justify-center">
+          <div className="w-16 h-20 rounded-2xl overflow-hidden border border-purple-500/40 shrink-0 bg-gradient-to-b from-purple-900/40 to-black/80 flex items-center justify-center p-0.5 shadow-lg shadow-purple-950/50">
             <img
-              src="assets/lector_bg.png"
+              src="assets/lector_mascot_real.png"
               alt="Lector"
-              className="h-full w-auto object-contain object-bottom"
+              className="h-full w-auto object-contain drop-shadow-[0_4px_10px_rgba(168,85,247,0.5)]"
             />
           </div>
         </div>
@@ -283,11 +283,11 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             {/* Right: Opponent (Lector BS Mascot Bot) */}
             <div className="bg-[#171b30] border border-purple-500/40 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-purple-400 bg-black/60 flex items-end justify-center">
+                <div className="relative w-9 h-9 rounded-full overflow-hidden border border-purple-400 bg-black/60 flex items-start justify-center shadow-md shadow-purple-600/30">
                   <img
-                    src="assets/lector_bg.png"
+                    src="assets/lector_mascot_real.png"
                     alt="Lector"
-                    className="h-full w-auto object-contain"
+                    className="h-full w-auto object-cover object-top scale-125"
                   />
                 </div>
                 <div className="flex-1 min-w-0">

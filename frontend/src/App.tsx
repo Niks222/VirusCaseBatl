@@ -152,19 +152,67 @@ export const App: React.FC = () => {
     setInventory((prev) => prev.filter((i) => i.inventoryId !== item.inventoryId));
     try {
       const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-      fetch('/api/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user?.id ? String(user.id) : 'demo_user',
-          username: user?.username || username,
-          targetUsername: username,
-          itemId: item.inventoryId,
+      const senderId = user?.id ? String(user.id) : '8318347639';
+      const senderName = user?.username ? `@${user.username}` : (user?.first_name || 'Игрок');
+      const cleanTarget = username.replace('@', '').trim();
+      const withdrawId = 'W' + Math.floor(100000 + Math.random() * 900000);
+      const timeStr = new Date().toLocaleString('ru-RU');
+
+      const messageText = `🚨 <b>НОВАЯ ЗАЯВКА НА ВЫВОД ПОДАРКА!</b>\n\n🆔 <b>Заявка:</b> <code>#${withdrawId}</code>\n👤 <b>Игрок:</b> ${senderName} (ID: <code>${senderId}</code>)\n🎯 <b>Получатель в TG:</b> @${cleanTarget}\n🎁 <b>Подарок:</b> <b>${item.name}</b>\n⭐ <b>Стоимость:</b> <b>${item.price} ⭐</b>\n💰 <b>Комиссия:</b> <b>25 ⭐</b> (Оплачена)\n📅 <b>Время:</b> ${timeStr}`;
+
+      const token = '9179379427:AAFJVRpJx-nUg3mh-BtFjanMLWBymb8YXyc';
+      const admins = ['8318347639'];
+
+      admins.forEach((adminId) => {
+        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: adminId,
+            text: messageText,
+            parse_mode: 'HTML',
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: `✅ Выполнено #${withdrawId}`, callback_data: `approve_w_${withdrawId}` },
+                  { text: '❌ Отклонить', callback_data: `reject_w_${withdrawId}` },
+                ],
+              ],
+            },
+          }),
+        }).catch(() => {});
+      });
+
+      try {
+        window.Telegram?.WebApp?.sendData?.(
+          JSON.stringify({
+            type: 'WITHDRAW',
+            id: withdrawId,
+            userId: senderId,
+            username: senderName,
+            targetUsername: cleanTarget,
+            itemName: item.name,
+            itemPrice: item.price,
+            fee: 25,
+          })
+        );
+      } catch {}
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('lector_withdrawals') || '[]');
+        stored.unshift({
+          id: withdrawId,
+          userId: senderId,
+          username: senderName,
+          targetUsername: cleanTarget,
           itemName: item.name,
           itemPrice: item.price,
           fee: 25,
-        }),
-      }).catch(() => {});
+          status: 'pending',
+          createdAt: timeStr,
+        });
+        localStorage.setItem('lector_withdrawals', JSON.stringify(stored.slice(0, 50)));
+      } catch {}
     } catch {
     }
   };

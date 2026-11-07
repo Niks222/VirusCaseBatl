@@ -198,7 +198,7 @@ export function recordDrop(userId, caseId, item) {
 }
 
 export function createWithdrawal(data) {
-  const id = Math.random().toString(36).substring(2, 10).toUpperCase();
+  const id = data.id || Math.random().toString(36).substring(2, 10).toUpperCase();
   const stmt = db.prepare(`
     INSERT INTO withdrawals (id, user_id, username, target_username, item_id, item_name, item_price, fee, status, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
