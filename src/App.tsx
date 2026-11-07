@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const [currency, setCurrency] = useState<'stars' | 'rub'>('stars');
   const [balanceStars, setBalanceStars] = useState<number>(() => {
     const saved = localStorage.getItem('lector_balance_stars');
-    return saved !== null ? Number(saved) : 350;
+    return saved !== null ? Number(saved) : 0;
   });
   const balanceRub = Math.round(balanceStars * 1.5);
 
@@ -32,18 +32,7 @@ export const App: React.FC = () => {
       if (saved) return JSON.parse(saved);
     } catch {
     }
-    return [
-      {
-        ...ALL_GIFTS['bear'],
-        inventoryId: 'init-1',
-        wonAt: 'Сегодня, 18:20',
-      },
-      {
-        ...ALL_GIFTS['rose'],
-        inventoryId: 'init-2',
-        wonAt: 'Сегодня, 18:25',
-      },
-    ];
+    return [];
   });
 
   useEffect(() => {
@@ -127,7 +116,25 @@ export const App: React.FC = () => {
   };
 
   const handleWithdrawGift = (item: InventoryItem, username: string) => {
+    setBalanceStars((prev) => Math.max(0, prev - 25));
     setInventory((prev) => prev.filter((i) => i.inventoryId !== item.inventoryId));
+    try {
+      const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+      fetch('/api/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.id ? String(user.id) : 'demo_user',
+          username: user?.username || username,
+          targetUsername: username,
+          itemId: item.inventoryId,
+          itemName: item.name,
+          itemPrice: item.price,
+          fee: 25,
+        }),
+      }).catch(() => {});
+    } catch {
+    }
   };
 
   const handleWinBattle = (wonItems: GiftItem[]) => {
@@ -271,9 +278,11 @@ export const App: React.FC = () => {
               onClose={() => setCurrentTab('cases')}
               currency={currency}
               inventory={inventory}
+              balanceStars={balanceStars}
               onSellItem={handleSellItem}
               onSellAll={handleSellAll}
               onWithdrawGift={handleWithdrawGift}
+              onOpenDeposit={() => setIsDepositOpen(true)}
             />
           </div>
         )}
@@ -306,9 +315,11 @@ export const App: React.FC = () => {
           onClose={() => setIsInventoryOpen(false)}
           currency={currency}
           inventory={inventory}
+          balanceStars={balanceStars}
           onSellItem={handleSellItem}
           onSellAll={handleSellAll}
           onWithdrawGift={handleWithdrawGift}
+          onOpenDeposit={() => setIsDepositOpen(true)}
         />
       )}
 
