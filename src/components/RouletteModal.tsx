@@ -181,9 +181,8 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   const totalDropsWeight = caseItem.drops.reduce((acc, d) => acc + d.weight, 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-xl max-h-[92vh] flex flex-col bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-        {/* Header with 3D Case Preview */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pb-16 bg-black/90 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-xl max-h-[82vh] flex flex-col bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/20 bg-black/40">
@@ -268,7 +267,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
           </div>
         </div>
 
-        {/* Action Controls & Fast Open Toggle */}
         <div className="p-4 bg-[#14182b] flex items-center justify-between gap-3 border-b border-white/[0.08]">
           <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-300 select-none">
             <input

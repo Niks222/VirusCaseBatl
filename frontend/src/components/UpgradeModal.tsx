@@ -137,8 +137,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg bg-[#0e111d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pb-16 bg-black/85 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-lg bg-[#0e111d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh]">
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08] bg-[#131728]">
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-400" />

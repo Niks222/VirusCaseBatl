@@ -23,7 +23,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#070913]/95 backdrop-blur-lg border-t border-white/[0.08] px-3 py-2 pb-5 md:pb-2">
+    <nav className="fixed bottom-0 inset-x-0 z-[70] pointer-events-auto select-none bg-[#070913]/95 backdrop-blur-lg border-t border-white/[0.08] px-3 py-2 pb-5 md:pb-2">
       <div className="max-w-md mx-auto flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -32,6 +32,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           return (
             <button
               key={item.id}
+              type="button"
               onClick={() => {
                 soundFx.playClick();
                 onSelectTab(item.id as TabType);

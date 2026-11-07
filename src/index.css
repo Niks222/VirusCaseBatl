@@ -9,8 +9,12 @@
     color: #ffffff;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
-    user-select: none;
     -webkit-tap-highlight-color: transparent;
+  }
+  input, textarea, select {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    touch-action: manipulation !important;
   }
 }
 

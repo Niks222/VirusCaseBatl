@@ -59,8 +59,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pb-16 bg-black/85 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-md bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
@@ -103,6 +103,11 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="Введите LECTOR или BLACK_SPRUIT"
+                  inputMode="text"
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  autoComplete="off"
+                  enterKeyHint="go"
                   className="flex-1 bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 outline-none uppercase font-mono"
                 />
                 <button

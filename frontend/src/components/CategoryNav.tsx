@@ -29,9 +29,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
   return (
     <div className="w-full space-y-2.5 my-3">
-      {/* Category Pills & Action Buttons */}
       <div className="flex items-center gap-2">
-        {/* Search Toggle Icon */}
         <button
           onClick={() => setShowSearch(!showSearch)}
           className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center border transition-all ${
@@ -44,7 +42,6 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           <Search className="w-4 h-4" />
         </button>
 
-        {/* Scrollable Categories matching reference UI */}
         <div className="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
           {CATEGORIES.map((cat) => {
             const isActive = selectedCategory === cat.id;
@@ -64,7 +61,6 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           })}
         </div>
 
-        {/* Sort Button */}
         <button
           onClick={toggleSort}
           className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center border transition-all ${
@@ -84,7 +80,6 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
         </button>
       </div>
 
-      {/* Expanded Search Bar */}
       {showSearch && (
         <div className="relative animate-fadeIn">
           <input
@@ -92,6 +87,11 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Поиск кейсов или подарков (мишка, кольцо, пёс, nft...)"
+            inputMode="search"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="off"
+            enterKeyHint="search"
             className="w-full bg-[#131627] border border-white/10 focus:border-purple-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 outline-none transition-colors"
             autoFocus
           />

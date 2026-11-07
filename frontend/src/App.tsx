@@ -325,7 +325,12 @@ export const App: React.FC = () => {
 
       <BottomNav
         currentTab={currentTab}
-        onSelectTab={(tab) => setCurrentTab(tab)}
+        onSelectTab={(tab) => {
+          setIsInventoryOpen(false);
+          setIsDepositOpen(false);
+          setActiveCase(null);
+          setCurrentTab(tab);
+        }}
         inventoryCount={inventory.length}
       />
       </div>

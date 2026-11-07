@@ -82,8 +82,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-xl bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pb-16 bg-black/85 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-xl bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-2">
             <Package className="w-5 h-5 text-purple-400" />
@@ -275,6 +275,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                     onChange={(e) => setTgUsername(e.target.value)}
                     placeholder="@username получателя в TG"
                     required
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    autoComplete="off"
+                    enterKeyHint="done"
                     className="w-full bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 outline-none"
                   />
                   <div className="flex gap-2">
