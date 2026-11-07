@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { LiveFeed } from './components/LiveFeed';
 import { CategoryNav } from './components/CategoryNav';
 import { CaseCard } from './components/CaseCard';
 import { RouletteModal } from './components/RouletteModal';
@@ -194,8 +193,6 @@ export const App: React.FC = () => {
           onOpenDeposit={() => setIsDepositOpen(true)}
           onOpenProfile={() => setIsInventoryOpen(true)}
         />
-
-        <LiveFeed />
 
         <main className="flex-1 max-w-4xl w-full mx-auto px-3 md:px-4">
           {currentTab === 'cases' && (
