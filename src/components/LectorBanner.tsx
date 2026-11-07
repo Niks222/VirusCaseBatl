@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Flame, Sparkles, MessageSquare, Zap } from 'lucide-react';
 import { soundFx } from '../utils/audio';
 
@@ -72,7 +72,7 @@ export const LectorBanner: React.FC<LectorBannerProps> = ({ onBonusClick }) => {
         <div className="relative shrink-0 flex flex-col items-center">
           <div className="relative w-24 h-32 sm:w-28 sm:h-36 rounded-2xl overflow-hidden border border-white/10 bg-black/60 flex items-end justify-center">
             <img
-              src="assets/lector_mascot_real.png"
+              src="assets/lector_mascot_real.png?v=3"
               alt="Lector"
               className="h-full w-auto object-contain object-bottom hover:scale-105 transition-transform duration-300 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
             />

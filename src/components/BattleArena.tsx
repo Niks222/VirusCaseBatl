@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { CaseItem, GiftItem } from '../types';
 import { ALL_CASES } from '../data/cases';
 import { Swords, Trophy, User, Sparkles, RefreshCw } from 'lucide-react';
@@ -139,7 +139,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
           </div>
           <div className="w-16 h-20 rounded-2xl overflow-hidden border border-purple-500/40 shrink-0 bg-gradient-to-b from-purple-900/40 to-black/80 flex items-center justify-center p-0.5 shadow-lg shadow-purple-950/50">
             <img
-              src="assets/lector_mascot_real.png"
+              src="assets/lector_mascot_real.png?v=3"
               alt="Lector"
               className="h-full w-auto object-contain drop-shadow-[0_4px_10px_rgba(168,85,247,0.5)]"
             />
@@ -285,7 +285,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
                 <div className="relative w-9 h-9 rounded-full overflow-hidden border border-purple-400 bg-black/60 flex items-start justify-center shadow-md shadow-purple-600/30">
                   <img
-                    src="assets/lector_mascot_real.png"
+                    src="assets/lector_mascot_real.png?v=3"
                     alt="Lector"
                     className="h-full w-auto object-cover object-top scale-125"
                   />

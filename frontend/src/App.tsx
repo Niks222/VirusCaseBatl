@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CategoryNav } from './components/CategoryNav';
 import { CaseCard } from './components/CaseCard';
@@ -262,12 +262,12 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen text-white flex flex-col relative overflow-x-hidden bg-[#070913]">
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex justify-center items-end opacity-[0.22]">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex justify-center items-end opacity-[0.28]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,#070913_78%)]" />
         <img
-          src="assets/lector_bg.png"
+          src="assets/lector_mascot_real.png?v=3"
           alt=""
-          className="h-[88vh] max-h-[860px] object-contain object-bottom filter drop-shadow-[0_0_50px_rgba(245,158,11,0.22)] select-none"
+          className="h-[88vh] max-h-[860px] object-contain object-bottom filter drop-shadow-[0_0_60px_rgba(168,85,247,0.35)] select-none"
         />
       </div>
 
