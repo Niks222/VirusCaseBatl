@@ -56,6 +56,24 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
     }
   }, [inputPriceInStars, targetOptions.length]);
 
+  useEffect(() => {
+    if (inputMode === 'item') {
+      if (selectedInventoryItem) {
+        const stillInInventory = inventory.find((i) => i.inventoryId === selectedInventoryItem.inventoryId);
+        if (!stillInInventory) {
+          if (inventory.length > 0) {
+            setSelectedInventoryItem(inventory[0]);
+          } else {
+            setSelectedInventoryItem(null);
+            setInputMode('balance');
+          }
+        }
+      } else if (inventory.length > 0) {
+        setSelectedInventoryItem(inventory[0]);
+      }
+    }
+  }, [inventory, inputMode]);
+
   const targetScrollRef = useRef<HTMLDivElement>(null);
   const scrollTargets = (direction: 'left' | 'right') => {
     if (targetScrollRef.current) {
@@ -84,7 +102,14 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   const handleSpinUpgrade = () => {
     if (isSpinning) return;
     if (!targetItem || targetOptions.length === 0) return;
-    if (inputMode === 'item' && !selectedInventoryItem) return;
+    if (inputMode === 'item') {
+      if (!selectedInventoryItem) return;
+      const exists = inventory.some((i) => i.inventoryId === selectedInventoryItem.inventoryId);
+      if (!exists) {
+        setSelectedInventoryItem(inventory[0] || null);
+        return;
+      }
+    }
     if (inputMode === 'balance' && currentBalance < inputPrice) {
       if (onOpenDeposit) onOpenDeposit();
       return;
@@ -126,6 +151,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           targetItem,
           inputMode === 'balance' ? inputPrice : undefined
         );
+        setSelectedInventoryItem(null);
       } else {
         setResultState('lost');
         soundFx.playTick(0.7);
@@ -133,6 +159,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           inputMode === 'item' ? selectedInventoryItem : null,
           inputMode === 'balance' ? inputPrice : undefined
         );
+        setSelectedInventoryItem(null);
       }
     }, 3900);
   };
@@ -184,7 +211,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">
                 {inputMode === 'item' ? 'Ваш предмет' : 'Ставка балансом'}
               </span>
-              {inputMode === 'item' && selectedInventoryItem ? (
+              {inputMode === 'item' && selectedInventoryItem && inventory.some((i) => i.inventoryId === selectedInventoryItem.inventoryId) ? (
                 <>
                   <div className="w-14 h-14 my-1 flex items-center justify-center">
                     <img src={selectedInventoryItem.image} alt={selectedInventoryItem.name} className="max-w-full max-h-full object-contain drop-shadow" />
@@ -399,15 +426,41 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           </div>
 
           <button
-            onClick={handleSpinUpgrade}
-            disabled={isSpinning || targetOptions.length === 0}
+            onClick={() => {
+              if (inputMode === 'balance' && currentBalance < inputPrice) {
+                if (onOpenDeposit) onOpenDeposit();
+                return;
+              }
+              handleSpinUpgrade();
+            }}
+            disabled={
+              isSpinning ||
+              targetOptions.length === 0 ||
+              (inputMode === 'item' &&
+                (!selectedInventoryItem ||
+                  !inventory.some((i) => i.inventoryId === selectedInventoryItem.inventoryId)))
+            }
             className={`w-full py-3.5 rounded-2xl font-gaming font-extrabold text-xs uppercase tracking-wider text-white shadow-xl transition-all ${
-              isSpinning || targetOptions.length === 0
+              isSpinning ||
+              targetOptions.length === 0 ||
+              (inputMode === 'item' &&
+                (!selectedInventoryItem ||
+                  !inventory.some((i) => i.inventoryId === selectedInventoryItem.inventoryId)))
                 ? 'opacity-50 cursor-not-allowed bg-gray-800'
                 : 'bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:opacity-95 active:scale-98 border border-purple-400/30'
             }`}
           >
-            {isSpinning ? 'Вращение...' : targetOptions.length === 0 ? 'Максимальный уровень' : `Апгрейд (${chancePercent}%)`}
+            {isSpinning
+              ? 'Вращение...'
+              : inputMode === 'item' &&
+                (!selectedInventoryItem ||
+                  !inventory.some((i) => i.inventoryId === selectedInventoryItem.inventoryId))
+              ? 'Инвентарь пуст'
+              : inputMode === 'balance' && currentBalance < inputPrice
+              ? `Пополнить баланс (${inputPrice} ${currency === 'stars' ? '⭐' : '₽'})`
+              : targetOptions.length === 0
+              ? 'Максимальный уровень'
+              : `Апгрейд (${chancePercent}%)`}
           </button>
         </div>
       </div>
