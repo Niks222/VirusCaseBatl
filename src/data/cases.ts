@@ -33,7 +33,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Мелочь',
     category: 'budget',
     price: 20,
-    rubPrice: 39,
+    rubPrice: 30,
     oldPrice: 30,
     color: '#ec4899',
     caseImage: 'assets/cases/case_meloch.png',
@@ -44,11 +44,11 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['rose'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['heart-box'], weight: 40 },
-      { item: ALL_GIFTS['bear'], weight: 35 },
-      { item: ALL_GIFTS['present-box'], weight: 15 },
-      { item: ALL_GIFTS['rose'], weight: 8 },
-      { item: ALL_GIFTS['stars-50'], weight: 2 },
+      { item: ALL_GIFTS['heart-box'], weight: 45 },
+      { item: ALL_GIFTS['bear'], weight: 40 },
+      { item: ALL_GIFTS['present-box'], weight: 10 },
+      { item: ALL_GIFTS['rose'], weight: 4 },
+      { item: ALL_GIFTS['stars-50'], weight: 1 },
     ]
   },
   {
@@ -56,7 +56,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Сдача',
     category: 'budget',
     price: 45,
-    rubPrice: 89,
+    rubPrice: 68,
     color: '#8b5cf6',
     caseImage: 'assets/cases/case_meloch.png',
     previewIcons: [
@@ -66,12 +66,12 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['champagne'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['present-box'], weight: 30 },
-      { item: ALL_GIFTS['cake'], weight: 25 },
-      { item: ALL_GIFTS['bouquet'], weight: 20 },
-      { item: ALL_GIFTS['champagne'], weight: 15 },
-      { item: ALL_GIFTS['rocket'], weight: 8 },
-      { item: ALL_GIFTS['ring'], weight: 2 },
+      { item: ALL_GIFTS['present-box'], weight: 50 },
+      { item: ALL_GIFTS['cake'], weight: 20 },
+      { item: ALL_GIFTS['bouquet'], weight: 15 },
+      { item: ALL_GIFTS['champagne'], weight: 10 },
+      { item: ALL_GIFTS['rocket'], weight: 4 },
+      { item: ALL_GIFTS['ring'], weight: 1 },
     ]
   },
   {
@@ -79,7 +79,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Трофей & Алмаз',
     category: 'budget',
     price: 90,
-    rubPrice: 179,
+    rubPrice: 135,
     badge: '100 ⭐ ДРОПЫ',
     color: '#06b6d4',
     caseImage: 'assets/cases/case_meloch.png',
@@ -90,11 +90,11 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['rocket'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['rocket'], weight: 35 },
-      { item: ALL_GIFTS['champagne'], weight: 30 },
-      { item: ALL_GIFTS['trophy'], weight: 15 },
-      { item: ALL_GIFTS['ring'], weight: 12 },
-      { item: ALL_GIFTS['diamond'], weight: 8 },
+      { item: ALL_GIFTS['rocket'], weight: 52 },
+      { item: ALL_GIFTS['champagne'], weight: 35 },
+      { item: ALL_GIFTS['trophy'], weight: 6 },
+      { item: ALL_GIFTS['ring'], weight: 4 },
+      { item: ALL_GIFTS['diamond'], weight: 3 },
     ]
   },
   {
@@ -102,7 +102,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Resale NFT Подарки',
     category: 'nft',
     price: 450,
-    rubPrice: 890,
+    rubPrice: 675,
     badge: 'RESALE NFT',
     color: '#10b981',
     caseImage: 'assets/cases/case_nft.png',
@@ -113,13 +113,13 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['candy-cane'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['snake-2025'], weight: 25 },
-      { item: ALL_GIFTS['lollipop'], weight: 20 },
-      { item: ALL_GIFTS['candy-cane'], weight: 15 },
-      { item: ALL_GIFTS['instant-ramen'], weight: 15 },
-      { item: ALL_GIFTS['lantern'], weight: 10 },
-      { item: ALL_GIFTS['snoop-dog'], weight: 10 },
-      { item: ALL_GIFTS['clover-pin'], weight: 5 },
+      { item: ALL_GIFTS['snake-2025'], weight: 32 },
+      { item: ALL_GIFTS['lollipop'], weight: 26 },
+      { item: ALL_GIFTS['candy-cane'], weight: 18 },
+      { item: ALL_GIFTS['instant-ramen'], weight: 14 },
+      { item: ALL_GIFTS['lantern'], weight: 5 },
+      { item: ALL_GIFTS['snoop-dog'], weight: 3 },
+      { item: ALL_GIFTS['clover-pin'], weight: 2 },
     ]
   },
   {
@@ -127,7 +127,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Snoop Cigar & Jedi',
     category: 'nft',
     price: 790,
-    rubPrice: 1490,
+    rubPrice: 1185,
     badge: '1321 ⭐ SNOOP',
     color: '#ef4444',
     caseImage: 'assets/cases/case_redo.png',
@@ -138,11 +138,11 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['weed-bag'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['weed-bag'], weight: 28 },
-      { item: ALL_GIFTS['money-bouquet'], weight: 25 },
-      { item: ALL_GIFTS['light-sword'], weight: 25 },
-      { item: ALL_GIFTS['snoop-dog'], weight: 14 },
-      { item: ALL_GIFTS['snoop-cigar'], weight: 8 },
+      { item: ALL_GIFTS['weed-bag'], weight: 45 },
+      { item: ALL_GIFTS['money-bouquet'], weight: 32 },
+      { item: ALL_GIFTS['light-sword'], weight: 15 },
+      { item: ALL_GIFTS['snoop-dog'], weight: 6 },
+      { item: ALL_GIFTS['snoop-cigar'], weight: 2 },
     ]
   },
   {
@@ -150,7 +150,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Пёс Сопротивления (Fragment)',
     category: 'resistance',
     price: 1690,
-    rubPrice: 3290,
+    rubPrice: 2535,
     badge: 'FRAGMENT OG',
     color: '#38bdf8',
     caseImage: 'assets/cases/case_resistance.png',
@@ -161,12 +161,12 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['nft-swiss-watch'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['nft-heart-locket'], weight: 35 },
-      { item: ALL_GIFTS['nft-heroic-helmet'], weight: 25 },
-      { item: ALL_GIFTS['nft-swiss-watch'], weight: 20 },
-      { item: ALL_GIFTS['nft-plush-pepe'], weight: 12 },
-      { item: ALL_GIFTS['nft-cap'], weight: 5 },
-      { item: ALL_GIFTS['nft-doge'], weight: 3 },
+      { item: ALL_GIFTS['nft-heart-locket'], weight: 46 },
+      { item: ALL_GIFTS['nft-heroic-helmet'], weight: 30 },
+      { item: ALL_GIFTS['nft-swiss-watch'], weight: 15 },
+      { item: ALL_GIFTS['nft-plush-pepe'], weight: 6 },
+      { item: ALL_GIFTS['nft-cap'], weight: 2 },
+      { item: ALL_GIFTS['nft-doge'], weight: 1 },
     ]
   },
   {
@@ -174,7 +174,7 @@ export const ALL_CASES: CaseItem[] = [
     name: '50/50: Мишка или Торт',
     category: 'fifty',
     price: 32,
-    rubPrice: 65,
+    rubPrice: 48,
     badge: '50/50',
     color: '#f59e0b',
     caseImage: 'assets/cases/case_5050.png',
@@ -183,8 +183,8 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['cake'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['bear'], weight: 50 },
-      { item: ALL_GIFTS['cake'], weight: 50 },
+      { item: ALL_GIFTS['bear'], weight: 70 },
+      { item: ALL_GIFTS['cake'], weight: 30 },
     ]
   },
   {
@@ -192,7 +192,7 @@ export const ALL_CASES: CaseItem[] = [
     name: '50/50: Роза или Алмаз',
     category: 'fifty',
     price: 60,
-    rubPrice: 119,
+    rubPrice: 90,
     badge: 'РИСК 50%',
     color: '#ec4899',
     caseImage: 'assets/cases/case_5050.png',
@@ -201,8 +201,8 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['diamond'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['rose'], weight: 50 },
-      { item: ALL_GIFTS['diamond'], weight: 50 },
+      { item: ALL_GIFTS['rose'], weight: 75 },
+      { item: ALL_GIFTS['diamond'], weight: 25 },
     ]
   },
   {
@@ -210,7 +210,7 @@ export const ALL_CASES: CaseItem[] = [
     name: '50/50: Букет или Кольцо',
     category: 'fifty',
     price: 75,
-    rubPrice: 149,
+    rubPrice: 113,
     badge: '50/50 ДЖЕКПОТ',
     color: '#10b981',
     caseImage: 'assets/cases/case_5050.png',
@@ -219,8 +219,8 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['ring'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['bouquet'], weight: 50 },
-      { item: ALL_GIFTS['ring'], weight: 50 },
+      { item: ALL_GIFTS['bouquet'], weight: 75 },
+      { item: ALL_GIFTS['ring'], weight: 25 },
     ]
   },
   {
@@ -228,7 +228,7 @@ export const ALL_CASES: CaseItem[] = [
     name: '50/50: Роза или Кубок',
     category: 'fifty',
     price: 60,
-    rubPrice: 119,
+    rubPrice: 90,
     badge: '50/50 КУБОК',
     color: '#f59e0b',
     caseImage: 'assets/cases/case_5050.png',
@@ -237,8 +237,8 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['trophy'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['rose'], weight: 50 },
-      { item: ALL_GIFTS['trophy'], weight: 50 },
+      { item: ALL_GIFTS['rose'], weight: 75 },
+      { item: ALL_GIFTS['trophy'], weight: 25 },
     ]
   },
   {
@@ -246,7 +246,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Lector Black Spruit VIP',
     category: 'top',
     price: 2490,
-    rubPrice: 4890,
+    rubPrice: 3735,
     badge: 'МАСКОТ VIP',
     color: '#f59e0b',
     caseImage: 'assets/cases/case_lector_bs.png',
@@ -257,13 +257,13 @@ export const ALL_CASES: CaseItem[] = [
       ALL_GIFTS['stars-5000'].image,
     ],
     drops: [
-      { item: ALL_GIFTS['snoop-cigar'], weight: 35 },
-      { item: ALL_GIFTS['nft-swiss-watch'], weight: 25 },
-      { item: ALL_GIFTS['nft-heroic-helmet'], weight: 15 },
-      { item: ALL_GIFTS['nft-plush-pepe'], weight: 10 },
-      { item: ALL_GIFTS['stars-5000'], weight: 8 },
-      { item: ALL_GIFTS['nft-cap'], weight: 4 },
-      { item: ALL_GIFTS['nft-doge'], weight: 3 },
+      { item: ALL_GIFTS['snoop-cigar'], weight: 48 },
+      { item: ALL_GIFTS['nft-swiss-watch'], weight: 28 },
+      { item: ALL_GIFTS['nft-heroic-helmet'], weight: 12 },
+      { item: ALL_GIFTS['nft-plush-pepe'], weight: 6 },
+      { item: ALL_GIFTS['stars-5000'], weight: 3 },
+      { item: ALL_GIFTS['nft-cap'], weight: 2 },
+      { item: ALL_GIFTS['nft-doge'], weight: 1 },
     ]
   },
   {
@@ -271,7 +271,7 @@ export const ALL_CASES: CaseItem[] = [
     name: 'Звёздный Шторм',
     category: 'top',
     price: 350,
-    rubPrice: 690,
+    rubPrice: 525,
     badge: 'ТОЛЬКО ЗВЁЗДЫ',
     color: '#eab308',
     caseImage: 'assets/cases/case_stars.png',

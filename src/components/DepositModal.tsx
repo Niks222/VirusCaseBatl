@@ -23,12 +23,12 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const [selectedPackIndex, setSelectedPackIndex] = useState(1);
 
   const starPacks = [
-    { stars: 50, rub: 99, bonus: '+0 ⭐' },
-    { stars: 150, rub: 279, bonus: '+15 ⭐ БОНУС', popular: true },
-    { stars: 350, rub: 599, bonus: '+50 ⭐ БОНУС' },
-    { stars: 750, rub: 1199, bonus: '+120 ⭐ БОНУС' },
-    { stars: 1500, rub: 2299, bonus: '+300 ⭐ БОНУС' },
-    { stars: 5000, rub: 6990, bonus: '+1500 ⭐ VIP' },
+    { stars: 50, rub: 75, bonus: '+0 ⭐' },
+    { stars: 150, rub: 225, bonus: '+15 ⭐ БОНУС', popular: true },
+    { stars: 350, rub: 525, bonus: '+50 ⭐ БОНУС' },
+    { stars: 750, rub: 1125, bonus: '+120 ⭐ БОНУС' },
+    { stars: 1500, rub: 2250, bonus: '+300 ⭐ БОНУС' },
+    { stars: 5000, rub: 7500, bonus: '+1500 ⭐ VIP' },
   ];
 
   const handleApplyPromo = (e: React.FormEvent) => {
@@ -61,25 +61,28 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
       <div className="relative w-full max-w-md bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
             <h2 className="font-extrabold text-base text-white">Пополнение Баланса</h2>
           </div>
-          <button
-            onClick={() => {
-              soundFx.playClick();
-              onClose();
-            }}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300">
+              1 ⭐ = 1.5 ₽
+            </span>
+            <button
+              onClick={() => {
+                soundFx.playClick();
+                onClose();
+              }}
+              className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         <div className="p-4 overflow-y-auto space-y-4">
-          {/* Promo code box */}
           <div className="p-3 rounded-2xl bg-[#171a2e] border border-purple-500/30">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold text-purple-300 flex items-center gap-1">
@@ -112,7 +115,6 @@ export const DepositModal: React.FC<DepositModalProps> = ({
             )}
           </div>
 
-          {/* Preset Packs Grid */}
           <div>
             <label className="text-xs text-gray-400 font-bold block mb-2">
               Выберите пакет пополнения:
@@ -156,13 +158,11 @@ export const DepositModal: React.FC<DepositModalProps> = ({
             </div>
           </div>
 
-          {/* Secure Guarantee */}
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#14172a] border border-white/5 text-[11px] text-gray-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Официальные платежи Telegram Stars и быстрый вывод призов на аккаунт.</span>
           </div>
 
-          {/* Main Deposit Action */}
           <button
             onClick={handleDepositClick}
             className="w-full py-3.5 rounded-2xl font-gaming font-extrabold text-sm uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 active:scale-98 shadow-xl shadow-purple-600/30 border border-purple-400/40 flex items-center justify-center gap-2"

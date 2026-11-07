@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { LiveFeed } from './components/LiveFeed';
-import { LectorBanner } from './components/LectorBanner';
 import { CategoryNav } from './components/CategoryNav';
 import { CaseCard } from './components/CaseCard';
 import { RouletteModal } from './components/RouletteModal';
@@ -22,21 +21,39 @@ export const App: React.FC = () => {
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
 
   const [currency, setCurrency] = useState<'stars' | 'rub'>('stars');
-  const [balanceStars, setBalanceStars] = useState<number>(350);
-  const [balanceRub, setBalanceRub] = useState<number>(550);
+  const [balanceStars, setBalanceStars] = useState<number>(() => {
+    const saved = localStorage.getItem('lector_balance_stars');
+    return saved !== null ? Number(saved) : 350;
+  });
+  const balanceRub = Math.round(balanceStars * 1.5);
 
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    {
-      ...ALL_GIFTS['bear'],
-      inventoryId: 'init-1',
-      wonAt: 'Сегодня, 18:20',
-    },
-    {
-      ...ALL_GIFTS['rose'],
-      inventoryId: 'init-2',
-      wonAt: 'Сегодня, 18:25',
-    },
-  ]);
+  const [inventory, setInventory] = useState<InventoryItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('lector_inventory');
+      if (saved) return JSON.parse(saved);
+    } catch {
+    }
+    return [
+      {
+        ...ALL_GIFTS['bear'],
+        inventoryId: 'init-1',
+        wonAt: 'Сегодня, 18:20',
+      },
+      {
+        ...ALL_GIFTS['rose'],
+        inventoryId: 'init-2',
+        wonAt: 'Сегодня, 18:25',
+      },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('lector_balance_stars', balanceStars.toString());
+  }, [balanceStars]);
+
+  useEffect(() => {
+    localStorage.setItem('lector_inventory', JSON.stringify(inventory));
+  }, [inventory]);
 
   const [activeCase, setActiveCase] = useState<CaseItem | null>(null);
   const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false);
@@ -83,19 +100,12 @@ export const App: React.FC = () => {
 
   const handleCaseWin = (wonItem: GiftItem, action: 'keep' | 'sell') => {
     if (activeCase && !activeCase.isDaily) {
-      if (currency === 'stars') {
-        setBalanceStars((prev) => Math.max(0, prev - activeCase.price));
-      } else {
-        setBalanceRub((prev) => Math.max(0, prev - activeCase.rubPrice));
-      }
+      const costInStars = currency === 'stars' ? activeCase.price : Math.round(activeCase.rubPrice / 1.5);
+      setBalanceStars((prev) => Math.max(0, prev - costInStars));
     }
 
     if (action === 'sell') {
-      if (currency === 'stars') {
-        setBalanceStars((prev) => prev + wonItem.price);
-      } else {
-        setBalanceRub((prev) => prev + wonItem.rubPrice);
-      }
+      setBalanceStars((prev) => prev + wonItem.price);
     } else {
       const newInvItem: InventoryItem = {
         ...wonItem,
@@ -108,19 +118,13 @@ export const App: React.FC = () => {
 
   const handleSellItem = (item: InventoryItem) => {
     setInventory((prev) => prev.filter((i) => i.inventoryId !== item.inventoryId));
-    if (currency === 'stars') {
-      setBalanceStars((prev) => prev + item.price);
-    } else {
-      setBalanceRub((prev) => prev + item.rubPrice);
-    }
+    setBalanceStars((prev) => prev + item.price);
   };
 
   const handleSellAll = () => {
     const totalS = inventory.reduce((acc, i) => acc + i.price, 0);
-    const totalR = inventory.reduce((acc, i) => acc + i.rubPrice, 0);
     setInventory([]);
     setBalanceStars((prev) => prev + totalS);
-    setBalanceRub((prev) => prev + totalR);
   };
 
   const handleWithdrawGift = (item: InventoryItem, username: string) => {
@@ -137,22 +141,16 @@ export const App: React.FC = () => {
   };
 
   const handleDeductBalance = (amount: number) => {
-    if (currency === 'stars') {
-      setBalanceStars((prev) => Math.max(0, prev - amount));
-    } else {
-      setBalanceRub((prev) => Math.max(0, prev - amount));
-    }
+    const starsDeduct = currency === 'stars' ? amount : Math.round(amount / 1.5);
+    setBalanceStars((prev) => Math.max(0, prev - starsDeduct));
   };
 
   const handleUpgradeSuccess = (spentItem: InventoryItem | null, wonItem: GiftItem, balanceCost?: number) => {
     if (spentItem) {
       setInventory((prev) => prev.filter((i) => i.inventoryId !== spentItem.inventoryId));
     } else if (balanceCost) {
-      if (currency === 'stars') {
-        setBalanceStars((prev) => Math.max(0, prev - balanceCost));
-      } else {
-        setBalanceRub((prev) => Math.max(0, prev - balanceCost));
-      }
+      const costStars = currency === 'stars' ? balanceCost : Math.round(balanceCost / 1.5);
+      setBalanceStars((prev) => Math.max(0, prev - costStars));
     }
     const newInvItem: InventoryItem = {
       ...wonItem,
@@ -166,20 +164,14 @@ export const App: React.FC = () => {
     if (spentItem) {
       setInventory((prev) => prev.filter((i) => i.inventoryId !== spentItem.inventoryId));
     } else if (balanceCost) {
-      if (currency === 'stars') {
-        setBalanceStars((prev) => Math.max(0, prev - balanceCost));
-      } else {
-        setBalanceRub((prev) => Math.max(0, prev - balanceCost));
-      }
+      const costStars = currency === 'stars' ? balanceCost : Math.round(balanceCost / 1.5);
+      setBalanceStars((prev) => Math.max(0, prev - costStars));
     }
   };
 
   const handleAddBalance = (amount: number, type: 'stars' | 'rub') => {
-    if (type === 'stars') {
-      setBalanceStars((prev) => prev + amount);
-    } else {
-      setBalanceRub((prev) => prev + amount);
-    }
+    const starsToAdd = type === 'stars' ? amount : Math.round(amount / 1.5);
+    setBalanceStars((prev) => prev + starsToAdd);
   };
 
   return (
@@ -208,8 +200,6 @@ export const App: React.FC = () => {
         <main className="flex-1 max-w-4xl w-full mx-auto px-3 md:px-4">
           {currentTab === 'cases' && (
             <>
-              <LectorBanner onBonusClick={() => setIsDepositOpen(true)} />
-
               <CategoryNav
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}

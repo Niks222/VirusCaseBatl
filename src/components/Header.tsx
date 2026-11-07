@@ -80,6 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2">
           <div 
             onClick={() => setCurrency(currency === 'stars' ? 'rub' : 'stars')}
+            title="Курс: 1 ⭐ = 1.5 ₽ (нажмите для переключения)"
             className="flex items-center gap-1.5 bg-[#141829] hover:bg-[#1b2038] border border-white/10 rounded-full py-1.5 px-3 cursor-pointer transition-colors"
           >
             {currency === 'stars' ? (
