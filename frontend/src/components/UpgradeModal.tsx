@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GiftItem, InventoryItem } from '../types';
 import { ALL_GIFTS } from '../data/gifts';
-import { Zap, X, Sparkles, ChevronRight, Coins } from 'lucide-react';
+import { Zap, X, Sparkles, ChevronLeft, ChevronRight, Coins } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/audio';
 
@@ -17,28 +17,6 @@ interface UpgradeModalProps {
   onUpgradeFail: (spentItem: InventoryItem | null, balanceCost?: number) => void;
   onOpenDeposit?: () => void;
 }
-
-const TARGET_KEYS = [
-  'rocket',
-  'champagne',
-  'ring',
-  'diamond',
-  'trophy',
-  'snake-2025',
-  'lollipop',
-  'instant-ramen',
-  'lantern',
-  'snoop-dog',
-  'clover-pin',
-  'hockey-mask',
-  'snoop-cigar',
-  'nft-heart-locket',
-  'nft-heroic-helmet',
-  'nft-swiss-watch',
-  'nft-plush-pepe',
-  'nft-cap',
-  'nft-doge',
-];
 
 const BALANCE_TIERS = [25, 50, 100, 250, 500];
 
@@ -56,14 +34,36 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const targetOptions: GiftItem[] = TARGET_KEYS.map((k) => ALL_GIFTS[k]).filter(Boolean);
-
   const [inputMode, setInputMode] = useState<'item' | 'balance'>(inventory.length > 0 ? 'item' : 'balance');
   const [selectedInventoryItem, setSelectedInventoryItem] = useState<InventoryItem | null>(
     (inventory.find((i) => i.id === preselectedItem?.id) as InventoryItem) || inventory[0] || null
   );
   const [selectedBalanceAmount, setSelectedBalanceAmount] = useState<number>(25);
-  const [targetItem, setTargetItem] = useState<GiftItem>(targetOptions[2] || targetOptions[0]);
+
+  const inputPriceInStars = inputMode === 'item' && selectedInventoryItem
+    ? selectedInventoryItem.price
+    : currency === 'stars' ? selectedBalanceAmount : Math.round(selectedBalanceAmount / 1.5);
+
+  const targetOptions: GiftItem[] = Object.values(ALL_GIFTS)
+    .filter((g) => g.price > inputPriceInStars)
+    .sort((a, b) => a.price - b.price);
+
+  const [targetItem, setTargetItem] = useState<GiftItem>(() => targetOptions[0] || ALL_GIFTS['champagne'] || ALL_GIFTS['bear']);
+
+  useEffect(() => {
+    if (targetOptions.length > 0 && (!targetItem || targetItem.price <= inputPriceInStars)) {
+      setTargetItem(targetOptions[0]);
+    }
+  }, [inputPriceInStars, targetOptions.length]);
+
+  const targetScrollRef = useRef<HTMLDivElement>(null);
+  const scrollTargets = (direction: 'left' | 'right') => {
+    if (targetScrollRef.current) {
+      const offset = direction === 'left' ? -220 : 220;
+      targetScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
+
   const [isSpinning, setIsSpinning] = useState(false);
   const [wheelAngle, setWheelAngle] = useState(0);
   const [resultState, setResultState] = useState<'idle' | 'won' | 'lost'>('idle');
@@ -77,12 +77,13 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
       : selectedInventoryItem.rubPrice
     : selectedBalanceAmount;
 
-  const targetPrice = currency === 'stars' ? targetItem.price : targetItem.rubPrice;
-  const rawChance = (inputPrice / targetPrice) * 92;
-  const chancePercent = Math.min(85, Math.max(3, parseFloat(rawChance.toFixed(1))));
+  const targetPrice = targetItem ? (currency === 'stars' ? targetItem.price : targetItem.rubPrice) : 0;
+  const rawChance = targetPrice > 0 ? (inputPrice / targetPrice) * 90 : 0;
+  const chancePercent = targetOptions.length === 0 ? 0 : Math.min(85, Math.max(1, parseFloat(rawChance.toFixed(1))));
 
   const handleSpinUpgrade = () => {
     if (isSpinning) return;
+    if (!targetItem || targetOptions.length === 0) return;
     if (inputMode === 'item' && !selectedInventoryItem) return;
     if (inputMode === 'balance' && currentBalance < inputPrice) {
       if (onOpenDeposit) onOpenDeposit();
@@ -233,7 +234,10 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           {inputMode === 'item' && inventory.length > 0 && (
             <div>
               <span className="text-[11px] text-gray-400 block mb-1.5">Выберите предмет для ставки:</span>
-              <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+              <div
+                style={{ touchAction: 'pan-x' }}
+                className="flex gap-2 overflow-x-auto no-scrollbar py-1 scroll-smooth select-none"
+              >
                 {inventory.map((inv) => (
                   <button
                     key={inv.inventoryId}
@@ -334,42 +338,76 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           )}
 
           <div>
-            <span className="text-[11px] text-gray-400 block mb-1.5">Выберите целевой подарок:</span>
-            <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
-              {targetOptions.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={() => {
-                    soundFx.playClick();
-                    setTargetItem(opt);
-                    setResultState('idle');
-                  }}
-                  className={`shrink-0 p-2 rounded-xl border text-center transition-all flex flex-col items-center justify-between ${
-                    targetItem.id === opt.id
-                      ? 'border-purple-500 bg-purple-950/40 shadow-md shadow-purple-600/20'
-                      : 'border-white/10 bg-[#161a2c] hover:border-white/20'
-                  }`}
-                >
-                  <img src={opt.image} alt={opt.name} className="w-10 h-10 object-contain my-0.5" />
-                  <span className="text-[10px] text-white font-bold block truncate max-w-[75px]">{opt.name}</span>
-                  <span className="text-[9px] text-amber-300 font-semibold block font-gaming">
-                    {currency === 'stars' ? `${opt.price} ⭐` : `${opt.rubPrice} ₽`}
-                  </span>
-                </button>
-              ))}
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] text-gray-400 font-bold">
+                Выберите цель (только дороже вашего):
+              </span>
+              {targetOptions.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => scrollTargets('left')}
+                    className="w-6 h-6 rounded-lg bg-[#161a2c] hover:bg-[#20253d] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollTargets('right')}
+                    className="w-6 h-6 rounded-lg bg-[#161a2c] hover:bg-[#20253d] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
+
+            {targetOptions.length === 0 ? (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center text-xs text-amber-300 font-bold">
+                Ваш предмет наивысшего уровня в игре! Апгрейд не требуется.
+              </div>
+            ) : (
+              <div
+                ref={targetScrollRef}
+                style={{ touchAction: 'pan-x' }}
+                className="flex gap-2 overflow-x-auto no-scrollbar py-1 scroll-smooth select-none"
+              >
+                {targetOptions.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => {
+                      soundFx.playClick();
+                      setTargetItem(opt);
+                      setResultState('idle');
+                    }}
+                    className={`shrink-0 p-2 rounded-xl border text-center transition-all flex flex-col items-center justify-between ${
+                      targetItem?.id === opt.id
+                        ? 'border-purple-500 bg-purple-950/40 shadow-md shadow-purple-600/20'
+                        : 'border-white/10 bg-[#161a2c] hover:border-white/20'
+                    }`}
+                  >
+                    <img src={opt.image} alt={opt.name} className="w-10 h-10 object-contain my-0.5" />
+                    <span className="text-[10px] text-white font-bold block truncate max-w-[75px]">{opt.name}</span>
+                    <span className="text-[9px] text-amber-300 font-semibold block font-gaming">
+                      {currency === 'stars' ? `${opt.price} ⭐` : `${opt.rubPrice} ₽`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <button
             onClick={handleSpinUpgrade}
-            disabled={isSpinning}
+            disabled={isSpinning || targetOptions.length === 0}
             className={`w-full py-3.5 rounded-2xl font-gaming font-extrabold text-xs uppercase tracking-wider text-white shadow-xl transition-all ${
-              isSpinning
+              isSpinning || targetOptions.length === 0
                 ? 'opacity-50 cursor-not-allowed bg-gray-800'
                 : 'bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:opacity-95 active:scale-98 border border-purple-400/30'
             }`}
           >
-            {isSpinning ? 'Вращение...' : `Апгрейд (${chancePercent}%)`}
+            {isSpinning ? 'Вращение...' : targetOptions.length === 0 ? 'Максимальный уровень' : `Апгрейд (${chancePercent}%)`}
           </button>
         </div>
       </div>
