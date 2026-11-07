@@ -4,25 +4,24 @@
 
 @layer base {
   body {
-    background: radial-gradient(circle at 50% 0%, #15182e 0%, #0c0e1a 50%, #07080f 100%);
+    background: #070913;
     min-height: 100vh;
     color: #ffffff;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
-/* Glassmorphism Cards */
 .glass-panel {
-  background: rgba(22, 26, 46, 0.75);
+  background: rgba(14, 17, 29, 0.85);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: linear-gradient(180deg, #181d33 0%, #121528 100%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #0e111d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:active {
@@ -55,10 +54,9 @@
   border-color: rgba(16, 185, 129, 0.7);
 }
 
-/* Neon buttons */
 .btn-primary {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-  box-shadow: 0 4px 20px -2px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 4px 20px -2px rgba(139, 92, 246, 0.4);
 }
 .btn-primary:active {
   opacity: 0.9;
@@ -66,14 +64,13 @@
 }
 
 .btn-secondary {
-  background: #1e2238;
+  background: #141829;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .btn-secondary:hover {
-  background: #272d4a;
+  background: #1c2138;
 }
 
-/* Custom horizontal hide scrollbar */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

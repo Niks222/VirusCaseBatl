@@ -1,9 +1,6 @@
 import { GiftItem } from '../types';
 
 export const ALL_GIFTS: Record<string, GiftItem> = {
-  // ==========================================
-  // 1. ОФИЦИАЛЬНЫЕ НЕ-NFT ПОДАРКИ TELEGRAM (Фото 1 и 2)
-  // ==========================================
   'heart-box': {
     id: 'heart-box',
     name: 'Коробка-Сердце',
@@ -114,10 +111,6 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
     rarity: 'epic',
     category: 'regular',
   },
-
-  // ==========================================
-  // 2. РЕСЕЙЛ NFT ПОДАРКИ TELEGRAM (Фото 3, 4, 5)
-  // ==========================================
   'snoop-cigar': {
     id: 'snoop-cigar',
     name: 'Snoop Cigar',
@@ -349,10 +342,6 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
     category: 'nft',
     isNft: true,
   },
-
-  // ==========================================
-  // 3. ОРИГИНАЛЬНЫЕ FRAGMENT NFT (Реальный Floor Price)
-  // ==========================================
   'nft-doge': {
     id: 'nft-doge',
     name: 'Пёс Сопротивления #001',
@@ -419,10 +408,6 @@ export const ALL_GIFTS: Record<string, GiftItem> = {
     category: 'nft',
     isNft: true,
   },
-
-  // ==========================================
-  // 4. ПАКИ ЗВЁЗД TELEGRAM (⭐)
-  // ==========================================
   'stars-15': {
     id: 'stars-15',
     name: '15 Звёзд Telegram',

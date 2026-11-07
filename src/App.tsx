@@ -16,18 +16,15 @@ import { ALL_GIFTS } from './data/gifts';
 import { CaseItem, GiftItem, InventoryItem } from './types';
 
 export const App: React.FC = () => {
-  // Navigation & View state
   const [currentTab, setCurrentTab] = useState<TabType>('cases');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
 
-  // Currency & User balances
   const [currency, setCurrency] = useState<'stars' | 'rub'>('stars');
-  const [balanceStars, setBalanceStars] = useState<number>(350); // Starting welcome bonus!
+  const [balanceStars, setBalanceStars] = useState<number>(350);
   const [balanceRub, setBalanceRub] = useState<number>(550);
 
-  // User inventory initialized with real gifts
   const [inventory, setInventory] = useState<InventoryItem[]>([
     {
       ...ALL_GIFTS['bear'],
@@ -41,27 +38,24 @@ export const App: React.FC = () => {
     },
   ]);
 
-  // Active Modals
   const [activeCase, setActiveCase] = useState<CaseItem | null>(null);
   const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
   const [upgradePreselected, setUpgradePreselected] = useState<GiftItem | null>(null);
 
-  // Initialize Telegram WebApp SDK if available
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
       if (window.Telegram.WebApp.setHeaderColor) {
-        window.Telegram.WebApp.setHeaderColor('#0b0d18');
+        window.Telegram.WebApp.setHeaderColor('#070913');
       }
       if (window.Telegram.WebApp.setBackgroundColor) {
-        window.Telegram.WebApp.setBackgroundColor('#0b0d18');
+        window.Telegram.WebApp.setBackgroundColor('#070913');
       }
     }
   }, []);
 
-  // Filter & sort cases
   const filteredCases = ALL_CASES.filter((c) => {
     if (selectedCategory !== 'all' && c.category !== selectedCategory) {
       return false;
@@ -113,7 +107,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handle sell single inventory item
   const handleSellItem = (item: InventoryItem) => {
     setInventory((prev) => prev.filter((i) => i.inventoryId !== item.inventoryId));
     if (currency === 'stars') {
@@ -123,7 +116,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Handle sell all items
   const handleSellAll = () => {
     const totalS = inventory.reduce((acc, i) => acc + i.price, 0);
     const totalR = inventory.reduce((acc, i) => acc + i.rubPrice, 0);
@@ -132,14 +124,11 @@ export const App: React.FC = () => {
     setBalanceRub((prev) => prev + totalR);
   };
 
-  // Handle gift withdrawal request
   const handleWithdrawGift = (item: InventoryItem, username: string) => {
     setInventory((prev) => prev.filter((i) => i.inventoryId !== item.inventoryId));
-    console.log(`Sending gift ${item.name} to Telegram user @${username}`);
   };
 
-  // Battle win
-  const handleWinBattle = (wonItems: GiftItem[], totalValue: number) => {
+  const handleWinBattle = (wonItems: GiftItem[]) => {
     const newItems: InventoryItem[] = wonItems.map((item) => ({
       ...item,
       inventoryId: Math.random().toString(),
@@ -156,10 +145,15 @@ export const App: React.FC = () => {
     }
   };
 
-  // Upgrade handlers
-  const handleUpgradeSuccess = (spentItem: InventoryItem | null, wonItem: GiftItem) => {
+  const handleUpgradeSuccess = (spentItem: InventoryItem | null, wonItem: GiftItem, balanceCost?: number) => {
     if (spentItem) {
       setInventory((prev) => prev.filter((i) => i.inventoryId !== spentItem.inventoryId));
+    } else if (balanceCost) {
+      if (currency === 'stars') {
+        setBalanceStars((prev) => Math.max(0, prev - balanceCost));
+      } else {
+        setBalanceRub((prev) => Math.max(0, prev - balanceCost));
+      }
     }
     const newInvItem: InventoryItem = {
       ...wonItem,
@@ -169,13 +163,18 @@ export const App: React.FC = () => {
     setInventory((prev) => [newInvItem, ...prev]);
   };
 
-  const handleUpgradeFail = (spentItem: InventoryItem | null) => {
+  const handleUpgradeFail = (spentItem: InventoryItem | null, balanceCost?: number) => {
     if (spentItem) {
       setInventory((prev) => prev.filter((i) => i.inventoryId !== spentItem.inventoryId));
+    } else if (balanceCost) {
+      if (currency === 'stars') {
+        setBalanceStars((prev) => Math.max(0, prev - balanceCost));
+      } else {
+        setBalanceRub((prev) => Math.max(0, prev - balanceCost));
+      }
     }
   };
 
-  // Add balance from deposit
   const handleAddBalance = (amount: number, type: 'stars' | 'rub') => {
     if (type === 'stars') {
       setBalanceStars((prev) => prev + amount);
@@ -185,38 +184,42 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-24 text-white flex flex-col">
-      {/* Top Fixed Header with Telegram User Avatar */}
-      <Header
-        balanceStars={balanceStars}
-        balanceRub={balanceRub}
-        currency={currency}
-        setCurrency={setCurrency}
-        onOpenDeposit={() => setIsDepositOpen(true)}
-        onOpenProfile={() => setIsInventoryOpen(true)}
-      />
+    <div className="min-h-screen text-white flex flex-col relative overflow-x-hidden bg-[#070913]">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex justify-center items-end opacity-[0.22]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,#070913_78%)]" />
+        <img
+          src="assets/lector_bg.png"
+          alt=""
+          className="h-[88vh] max-h-[860px] object-contain object-bottom filter drop-shadow-[0_0_50px_rgba(245,158,11,0.22)] select-none"
+        />
+      </div>
 
-      {/* Realtime Live Drop Ticker */}
-      <LiveFeed />
+      <div className="relative z-10 flex flex-col min-h-screen pb-24">
+        <Header
+          balanceStars={balanceStars}
+          balanceRub={balanceRub}
+          currency={currency}
+          setCurrency={setCurrency}
+          onOpenDeposit={() => setIsDepositOpen(true)}
+          onOpenProfile={() => setIsInventoryOpen(true)}
+        />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-3 md:px-4">
-        {currentTab === 'cases' && (
-          <>
-            {/* LECTOR BS Mascot Hero Banner */}
-            <LectorBanner onBonusClick={() => setIsDepositOpen(true)} />
+        <LiveFeed />
 
-            {/* Filter Navigation matching RubUp reference UI */}
-            <CategoryNav
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-            />
+        <main className="flex-1 max-w-4xl w-full mx-auto px-3 md:px-4">
+          {currentTab === 'cases' && (
+            <>
+              <LectorBanner onBonusClick={() => setIsDepositOpen(true)} />
 
-            {/* Section Header */}
+              <CategoryNav
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+              />
+
             <div className="flex items-center justify-between mt-3 mb-2 px-1">
               <span className="font-gaming font-extrabold text-sm text-gray-200">
                 {selectedCategory === 'all'
@@ -232,11 +235,10 @@ export const App: React.FC = () => {
                   : 'Кейсы'}
               </span>
               <span className="text-[11px] text-gray-400 font-semibold">
-                {filteredCases.length} кейсов доступно
+                {filteredCases.length} кейсов
               </span>
             </div>
 
-            {/* Cases 2-column Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5">
               {filteredCases.map((caseItem) => (
                 <CaseCard
@@ -266,9 +268,12 @@ export const App: React.FC = () => {
               onClose={() => setCurrentTab('cases')}
               currency={currency}
               inventory={inventory}
+              balanceStars={balanceStars}
+              balanceRub={balanceRub}
               preselectedItem={upgradePreselected}
               onUpgradeSuccess={handleUpgradeSuccess}
               onUpgradeFail={handleUpgradeFail}
+              onOpenDeposit={() => setIsDepositOpen(true)}
             />
           </div>
         )}
@@ -288,7 +293,6 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Roulette Opening Modal */}
       {activeCase && (
         <RouletteModal
           caseItem={activeCase}
@@ -303,7 +307,6 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Deposit Modal */}
       <DepositModal
         isOpen={isDepositOpen}
         onClose={() => setIsDepositOpen(false)}
@@ -311,7 +314,6 @@ export const App: React.FC = () => {
         onAddBalance={handleAddBalance}
       />
 
-      {/* Standalone Inventory Modal triggered from Header */}
       {isInventoryOpen && currentTab !== 'inventory' && (
         <InventoryModal
           isOpen={isInventoryOpen}
@@ -324,12 +326,12 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Mobile Bottom Navigation Bar */}
       <BottomNav
         currentTab={currentTab}
         onSelectTab={(tab) => setCurrentTab(tab)}
         inventoryCount={inventory.length}
       />
+      </div>
     </div>
   );
 };

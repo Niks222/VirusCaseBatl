@@ -13,9 +13,9 @@ interface RouletteModalProps {
   onOpenUpgradeWithItem?: (item: GiftItem) => void;
 }
 
-const ITEM_WIDTH = 130; // Width of each card in the roulette strip in px
-const STRIP_LENGTH = 65; // Total items in strip
-const WINNING_INDEX = 52; // Item where roulette stops
+const ITEM_WIDTH = 130;
+const STRIP_LENGTH = 65;
+const WINNING_INDEX = 52;
 
 export const RouletteModal: React.FC<RouletteModalProps> = ({
   caseItem,
@@ -36,7 +36,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   const stripRef = useRef<HTMLDivElement>(null);
   const tickAudioTimerRef = useRef<number[]>([]);
 
-  // Calculate weighted winning item
   const pickWinningItem = (): GiftItem => {
     const totalWeight = caseItem.drops.reduce((sum, drop) => sum + drop.weight, 0);
     let rand = Math.random() * totalWeight;
@@ -49,7 +48,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
     return caseItem.drops[0].item;
   };
 
-  // Generate roulette strip with winning item at index 52
   const generateStrip = (winner: GiftItem) => {
     const allDrops = caseItem.drops.map((d) => d.item);
     const strip: GiftItem[] = [];
@@ -65,7 +63,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
     return strip;
   };
 
-  // Reset or initialize modal
   useEffect(() => {
     const winner = pickWinningItem();
     setRouletteItems(generateStrip(winner));
@@ -94,7 +91,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
     setShowResult(false);
 
     if (fastOpen) {
-      // Instant reveal
       setTimeout(() => {
         setIsSpinning(false);
         setShowResult(true);
@@ -103,7 +99,6 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
       return;
     }
 
-    // Normal Roulette Spin with realistic deceleration
     if (stripRef.current) {
       stripRef.current.style.transition = 'none';
       stripRef.current.style.transform = 'translateX(0px)';

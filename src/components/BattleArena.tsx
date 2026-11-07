@@ -18,7 +18,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
   onWinBattle,
   onDeductBalance,
 }) => {
-  const [selectedCase, setSelectedCase] = useState<CaseItem>(ALL_CASES[1]); // default 'Мелочь' or 'Пёс Сопротивления'
+  const [selectedCase, setSelectedCase] = useState<CaseItem>(ALL_CASES[1]);
   const [roundsCount, setRoundsCount] = useState<number>(3);
   const [battleState, setBattleState] = useState<'lobby' | 'fighting' | 'finished'>('lobby');
   const [currentRound, setCurrentRound] = useState<number>(0);
@@ -27,7 +27,6 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
   const [botDrops, setBotDrops] = useState<GiftItem[]>([]);
   const [currentSpinning, setCurrentSpinning] = useState(false);
 
-  // Helper to pick a drop based on case weights
   const getRandomDrop = (c: CaseItem): GiftItem => {
     const totalWeight = c.drops.reduce((sum, d) => sum + d.weight, 0);
     let rand = Math.random() * totalWeight;
@@ -94,7 +93,6 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
           const finalBVal = nextB.reduce((acc, item) => acc + (currency === 'stars' ? item.price : item.rubPrice), 0);
 
           if (finalPVal >= finalBVal) {
-            // Player won all drops!
             soundFx.playWin('legendary');
             confetti({
               particleCount: 110,
@@ -126,13 +124,12 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
 
   return (
     <div className="space-y-4 my-2">
-      {/* Title & Mascot Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-950/40 via-[#181a2e] to-purple-950/40 border border-red-500/30 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 text-red-400 font-extrabold text-xs uppercase tracking-wider mb-1">
               <Swords className="w-4 h-4 text-red-400" />
-              <span>PvP РЕЖИМ: ПОБЕДИТЕЛЬ ЗАБИРАЕТ ВСЁ</span>
+              <span>PvP РЕЖИМ</span>
             </div>
             <h2 className="font-gaming font-extrabold text-xl text-white">
               КЕЙС БАТЛЫ
@@ -141,11 +138,11 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
               Сразись 1 на 1 против главного маскота <span className="text-purple-300 font-bold">LECTOR BS</span>. Чей дроп дороже — тот забирает общий банк подарков!
             </p>
           </div>
-          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-red-500/50 shrink-0 shadow-lg shadow-red-600/30">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-black/60 flex items-end justify-center">
             <img
-              src="assets/lector_portrait.jpg"
-              alt="Lector Mascot"
-              className="w-full h-full object-cover"
+              src="assets/lector_bg.png"
+              alt="Lector"
+              className="h-full w-auto object-contain object-bottom"
             />
           </div>
         </div>
@@ -157,7 +154,6 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             1. Выберите кейс для батла:
           </h3>
 
-          {/* Real 3D Cases Grid Selector */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {ALL_CASES.filter((c) => !c.isDaily).map((c) => (
               <div
@@ -244,28 +240,24 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             </span>
           </div>
 
-          {/* Side by Side Combatants */}
           <div className="grid grid-cols-2 gap-3 relative">
-            {/* Center VS Badge */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-red-600 border-2 border-white/40 flex items-center justify-center font-gaming font-black text-xs text-white shadow-xl">
               VS
             </div>
 
-            {/* Left: Player (You) */}
             <div className="bg-[#171b30] border border-blue-500/30 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300">
                   <User className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-xs font-bold text-white block truncate">ВЫ (Игрок)</span>
+                  <span className="text-xs font-bold text-white block truncate">ВЫ</span>
                   <span className="text-[11px] text-amber-300 font-extrabold font-gaming">
                     {playerTotalValue} {currency === 'stars' ? '⭐' : '₽'}
                   </span>
                 </div>
               </div>
 
-              {/* Player Drops history with REAL IMAGES */}
               <div className="w-full space-y-1.5 min-h-[140px] flex flex-col justify-center">
                 {playerDrops.map((drop, i) => (
                   <div
@@ -294,22 +286,21 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
             {/* Right: Opponent (Lector BS Mascot Bot) */}
             <div className="bg-[#171b30] border border-purple-500/40 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-purple-400">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-purple-400 bg-black/60 flex items-end justify-center">
                   <img
-                    src="assets/lector_portrait.jpg"
-                    alt="Lector Bot"
-                    className="w-full h-full object-cover"
+                    src="assets/lector_bg.png"
+                    alt="Lector"
+                    className="h-full w-auto object-contain"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-xs font-bold text-purple-200 block truncate">LECTOR BS (Маскот)</span>
+                  <span className="text-xs font-bold text-purple-200 block truncate">LECTOR BS</span>
                   <span className="text-[11px] text-amber-300 font-extrabold font-gaming">
                     {botTotalValue} {currency === 'stars' ? '⭐' : '₽'}
                   </span>
                 </div>
               </div>
 
-              {/* Bot Drops history with REAL IMAGES */}
               <div className="w-full space-y-1.5 min-h-[140px] flex flex-col justify-center">
                 {botDrops.map((drop, i) => (
                   <div

@@ -2,7 +2,6 @@ import { CaseItem } from '../types';
 import { ALL_GIFTS } from './gifts';
 
 export const ALL_CASES: CaseItem[] = [
-  // --- Daily / Free ---
   {
     id: 'daily-gift',
     name: 'Подарок Дня',
@@ -29,8 +28,6 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['cake'], weight: 1 },
     ]
   },
-
-  // --- На сдачу (Standard TG non-NFT gifts from Photo 1 & 2) ---
   {
     id: 'case-meloch',
     name: 'Мелочь',

@@ -4,10 +4,10 @@ export interface GiftItem {
   id: string;
   name: string;
   subtitle?: string;
-  image: string; // Path to real PNG/WEBP asset
+  image: string;
   iconFallback?: string;
-  price: number; // Value in Stars (⭐)
-  rubPrice: number; // Value in Rubles (₽)
+  price: number;
+  rubPrice: number;
   rarity: RarityType;
   category: 'regular' | 'nft' | 'stars' | 'exclusive';
   isNft?: boolean;
@@ -15,7 +15,7 @@ export interface GiftItem {
 
 export interface CaseDropRate {
   item: GiftItem;
-  weight: number; // Weight for probability calculation
+  weight: number;
   chancePercent?: number;
 }
 
@@ -23,11 +23,11 @@ export interface CaseItem {
   id: string;
   name: string;
   category: 'all' | 'budget' | 'nft' | 'resistance' | 'fifty' | 'top' | 'daily';
-  price: number; // In Stars
-  rubPrice: number; // In Rubles
+  price: number;
+  rubPrice: number;
   oldPrice?: number;
-  caseImage: string; // 3D case artwork image
-  previewIcons: string[]; // URLs or fallbacks
+  caseImage: string;
+  previewIcons: string[];
   drops: CaseDropRate[];
   badge?: string;
   isDaily?: boolean;

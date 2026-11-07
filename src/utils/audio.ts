@@ -1,5 +1,3 @@
-// Web Audio API Synthesizer for high-tech sounds and Telegram haptics
-
 class SoundManager {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
@@ -16,7 +14,6 @@ class SoundManager {
     }
   }
 
-  // Play click / tick sound as roulette passes an item
   playTick(pitchShift = 1) {
     if (this.isMuted) return;
     try {
@@ -39,12 +36,10 @@ class SoundManager {
       osc.start();
       osc.stop(this.ctx.currentTime + 0.04);
 
-      // Telegram haptic
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
       }
     } catch {
-      // Audio fallback silent
     }
   }
 
@@ -78,12 +73,10 @@ class SoundManager {
         osc.stop(now + index * 0.08 + 0.4);
       });
 
-      // Telegram haptic
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
       }
     } catch {
-      // Audio fallback silent
     }
   }
 
