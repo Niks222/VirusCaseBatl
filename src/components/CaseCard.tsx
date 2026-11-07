@@ -8,6 +8,7 @@ interface CaseCardProps {
   currency: 'stars' | 'rub';
   onSelect: (caseItem: CaseItem) => void;
   canClaimDaily?: boolean;
+  dailyRemainingText?: string;
 }
 
 export const CaseCard: React.FC<CaseCardProps> = ({
@@ -15,9 +16,14 @@ export const CaseCard: React.FC<CaseCardProps> = ({
   currency,
   onSelect,
   canClaimDaily = true,
+  dailyRemainingText = '',
 }) => {
   const handleClick = () => {
     soundFx.playClick();
+    if (caseItem.isDaily && !canClaimDaily) {
+      alert(`Подарок дня доступен 1 раз в 24 часа! До следующего открытия: ${dailyRemainingText}`);
+      return;
+    }
     onSelect(caseItem);
   };
 
@@ -100,7 +106,14 @@ export const CaseCard: React.FC<CaseCardProps> = ({
         </h3>
 
         {caseItem.isDaily ? (
-          <button className="w-full py-2 px-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 active:scale-98 text-white shadow border border-blue-400/30 flex items-center justify-center gap-1.5 transition-all">
+          <button
+            type="button"
+            className={`w-full py-2 px-2.5 rounded-xl font-bold text-xs shadow flex items-center justify-center gap-1.5 transition-all ${
+              canClaimDaily
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 active:scale-98 text-white border border-blue-400/40'
+                : 'bg-white/5 border border-white/10 text-gray-400 cursor-not-allowed'
+            }`}
+          >
             {canClaimDaily ? (
               <>
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
@@ -108,8 +121,8 @@ export const CaseCard: React.FC<CaseCardProps> = ({
               </>
             ) : (
               <>
-                <Clock className="w-3.5 h-3.5 text-gray-300" />
-                <span>18:42</span>
+                <Clock className="w-3.5 h-3.5 text-gray-400" />
+                <span>{dailyRemainingText}</span>
               </>
             )}
           </button>

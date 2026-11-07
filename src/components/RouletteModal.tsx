@@ -11,6 +11,8 @@ interface RouletteModalProps {
   onClose: () => void;
   onWin: (wonItem: GiftItem, action: 'keep' | 'sell') => void;
   onOpenUpgradeWithItem?: (item: GiftItem) => void;
+  isDailyAvailable?: boolean;
+  dailyRemainingText?: string;
 }
 
 const ITEM_WIDTH = 130;
@@ -24,6 +26,8 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
   onClose,
   onWin,
   onOpenUpgradeWithItem,
+  isDailyAvailable = true,
+  dailyRemainingText = '',
 }) => {
   if (!caseItem) return null;
 
@@ -77,6 +81,10 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
 
   const handleStartOpen = () => {
     if (isSpinning) return;
+    if (caseItem.isDaily && isDailyAvailable === false) {
+      alert(`Подарок дня уже получен! До следующего открытия: ${dailyRemainingText}`);
+      return;
+    }
     const price = currency === 'stars' ? caseItem.price : caseItem.rubPrice;
     if (userBalance < price && !caseItem.isDaily) {
       alert('Недостаточно средств на балансе! Пополните баланс.');
@@ -279,19 +287,25 @@ export const RouletteModal: React.FC<RouletteModalProps> = ({
           </label>
 
           <button
+            type="button"
             onClick={handleStartOpen}
-            disabled={isSpinning}
+            disabled={isSpinning || (caseItem.isDaily && isDailyAvailable === false)}
             className={`flex-1 max-w-[240px] py-3 px-5 rounded-2xl font-gaming font-extrabold text-sm uppercase tracking-wider text-white shadow-xl transition-all ${
-              isSpinning
-                ? 'opacity-50 cursor-not-allowed bg-gray-700'
+              isSpinning || (caseItem.isDaily && isDailyAvailable === false)
+                ? 'opacity-50 cursor-not-allowed bg-gray-700 border-gray-600'
                 : 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 active:scale-95 shadow-purple-600/30 border border-purple-400/40'
             }`}
           >
-            {isSpinning ? 'Крутим...' : caseItem.isDaily ? 'Получить подарок' : `Открыть за ${costDisplay}`}
+            {isSpinning
+              ? 'Крутим...'
+              : caseItem.isDaily
+              ? isDailyAvailable === false
+                ? `Осталось ${dailyRemainingText}`
+                : 'Получить подарок'
+              : `Открыть за ${costDisplay}`}
           </button>
         </div>
 
-        {/* Drops Preview List with Real Images */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2 max-h-[220px]">
           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />

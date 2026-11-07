@@ -48,6 +48,32 @@ export const App: React.FC = () => {
   const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
   const [upgradePreselected, setUpgradePreselected] = useState<GiftItem | null>(null);
 
+  const [lastDailyClaim, setLastDailyClaim] = useState<number>(() => {
+    const saved = localStorage.getItem('lector_last_daily_claim');
+    return saved ? Number(saved) : 0;
+  });
+  const [nowTime, setNowTime] = useState<number>(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowTime(Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const DAILY_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+  const canClaimDaily = nowTime - lastDailyClaim >= DAILY_COOLDOWN_MS;
+  const remainingDailyMs = Math.max(0, DAILY_COOLDOWN_MS - (nowTime - lastDailyClaim));
+
+  const formatDailyRemaining = (ms: number) => {
+    const totalSec = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSec / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+  const dailyRemainingText = formatDailyRemaining(remainingDailyMs);
+
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
@@ -90,6 +116,12 @@ export const App: React.FC = () => {
     if (activeCase && !activeCase.isDaily) {
       const costInStars = currency === 'stars' ? activeCase.price : Math.round(activeCase.rubPrice / 1.5);
       setBalanceStars((prev) => Math.max(0, prev - costInStars));
+    }
+
+    if (activeCase?.isDaily) {
+      const now = Date.now();
+      setLastDailyClaim(now);
+      localStorage.setItem('lector_last_daily_claim', now.toString());
     }
 
     if (action === 'sell') {
@@ -239,6 +271,8 @@ export const App: React.FC = () => {
                   caseItem={caseItem}
                   currency={currency}
                   onSelect={(item) => setActiveCase(item)}
+                  canClaimDaily={canClaimDaily}
+                  dailyRemainingText={dailyRemainingText}
                 />
               ))}
             </div>
@@ -299,6 +333,8 @@ export const App: React.FC = () => {
             setUpgradePreselected(item);
             setCurrentTab('upgrade');
           }}
+          isDailyAvailable={canClaimDaily}
+          dailyRemainingText={dailyRemainingText}
         />
       )}
 
