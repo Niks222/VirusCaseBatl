@@ -20,15 +20,55 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenProfile,
 }) => {
   const [muted, setMuted] = useState(false);
-  const [tgUser, setTgUser] = useState<{ firstName: string; photoUrl?: string } | null>(null);
+  const [tgUser, setTgUser] = useState<{ firstName: string; photoUrl?: string } | null>(() => {
+    const cachedPhoto = localStorage.getItem('lector_user_avatar') || undefined;
+    const cachedName = localStorage.getItem('lector_user_name') || 'Игрок';
+    return { firstName: cachedName, photoUrl: cachedPhoto };
+  });
 
   useEffect(() => {
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-      const u = window.Telegram.WebApp.initDataUnsafe.user;
-      setTgUser({
-        firstName: u.first_name || 'Игрок',
-        photoUrl: u.photo_url,
-      });
+    const BOT_TOKEN = '9179379427:AAFJVRpJx-nUg3mh-BtFjanMLWBymb8YXyc';
+    const tg = window.Telegram?.WebApp;
+    const u = tg?.initDataUnsafe?.user;
+
+    const firstName = u?.first_name || localStorage.getItem('lector_user_name') || 'Игрок';
+    if (u?.first_name) {
+      localStorage.setItem('lector_user_name', u.first_name);
+    }
+
+    let photo = u?.photo_url || localStorage.getItem('lector_user_avatar') || '';
+    if (photo) {
+      setTgUser({ firstName, photoUrl: photo });
+      localStorage.setItem('lector_user_avatar', photo);
+    } else {
+      setTgUser({ firstName });
+    }
+
+    const userId = u?.id ? String(u.id) : (localStorage.getItem('lector_user_id') || '8318347639');
+    if (u?.id) {
+      localStorage.setItem('lector_user_id', String(u.id));
+    }
+
+    if (!photo && userId) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUserProfilePhotos?user_id=${userId}&limit=1`)
+        .then((res) => res.json())
+        .then((data) => {
+          const photos = data?.result?.photos?.[0];
+          const fileId = photos?.[photos.length - 1]?.file_id || photos?.[0]?.file_id;
+          if (fileId) {
+            return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`)
+              .then((r) => r.json())
+              .then((fileData) => {
+                const filePath = fileData?.result?.file_path;
+                if (filePath) {
+                  const fullPhotoUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${filePath}`;
+                  setTgUser({ firstName, photoUrl: fullPhotoUrl });
+                  localStorage.setItem('lector_user_avatar', fullPhotoUrl);
+                }
+              });
+          }
+        })
+        .catch(() => {});
     }
   }, []);
 

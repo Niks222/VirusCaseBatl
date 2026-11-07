@@ -244,8 +244,16 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
 
             <div className="bg-[#171b30] border border-blue-500/30 rounded-xl p-3 flex flex-col items-center">
               <div className="flex items-center gap-2 w-full border-b border-white/10 pb-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300">
-                  <User className="w-4 h-4" />
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-blue-400 bg-blue-500/20 flex items-center justify-center text-blue-300">
+                  {localStorage.getItem('lector_user_avatar') ? (
+                    <img
+                      src={localStorage.getItem('lector_user_avatar')!}
+                      alt="Player"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-4 h-4" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-xs font-bold text-white block truncate">ВЫ</span>
