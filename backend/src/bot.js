@@ -81,8 +81,8 @@ bot.command('start', async (ctx) => {
     .text(' Кейс Батлы', 'btn_battles')
     .webApp(' Мой Инвентарь', WEBAPP_URL)
     .row()
-    .text('💎 Пополнить Stars', 'btn_deposit')
-    .text('📦 Мои Заявки', 'btn_my_withdrawals')
+    .text(' Пополнить Stars', 'btn_deposit')
+    .text(' Мои Заявки', 'btn_my_withdrawals')
     .row()
     .text('Промокод (+150 )', 'btn_bonus')
     .text(' Поддержка', 'btn_support');
@@ -135,13 +135,6 @@ bot.command('start', async (ctx) => {
 
 bot.command('admin', async (ctx) => {
   const userId = ctx.from?.id;
-  const adminIds = getAllAdminIds();
-
-  if (adminIds.length === 0) {
-    addAdmin(userId, ctx.from?.username || '');
-    await ctx.reply(`🎉 Вы автоматически назначены главным администратором системы! (ID: <code>${userId}</code>)`, { parse_mode: 'HTML' });
-  }
-
   if (!checkIsAdmin(userId)) {
     return ctx.reply('⛔️ У вас нет прав доступа к админ-панели.');
   }
