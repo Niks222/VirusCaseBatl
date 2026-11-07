@@ -30,6 +30,7 @@ const TARGET_KEYS = [
   'lantern',
   'snoop-dog',
   'clover-pin',
+  'hockey-mask',
   'snoop-cigar',
   'nft-heart-locket',
   'nft-heroic-helmet',
