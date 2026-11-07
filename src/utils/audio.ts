@@ -43,7 +43,6 @@ class SoundManager {
     }
   }
 
-  // Play celebratory win sound
   playWin(rarity: string = 'common') {
     if (this.isMuted) return;
     try {

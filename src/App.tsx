@@ -81,7 +81,6 @@ export const App: React.FC = () => {
     return 0;
   });
 
-  // Handle case win
   const handleCaseWin = (wonItem: GiftItem, action: 'keep' | 'sell') => {
     if (activeCase && !activeCase.isDaily) {
       if (currency === 'stars') {

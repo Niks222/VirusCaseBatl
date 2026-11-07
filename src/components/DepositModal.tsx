@@ -49,9 +49,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
     const pack = starPacks[selectedPackIndex];
     soundFx.playWin('rare');
 
-    // If Telegram Stars WebApp Invoice is supported
     if (window.Telegram?.WebApp?.openInvoice) {
-      // In production this opens the Telegram Stars invoice url from backend bot
       console.log('Opening Telegram Invoice...');
     }
 

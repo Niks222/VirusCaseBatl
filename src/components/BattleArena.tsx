@@ -86,7 +86,6 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
           executeBattleRound(roundNum + 1, nextP, nextB);
         }, 1200);
       } else {
-        // Finished
         setTimeout(() => {
           setBattleState('finished');
           const finalPVal = nextP.reduce((acc, item) => acc + (currency === 'stars' ? item.price : item.rubPrice), 0);
@@ -221,9 +220,7 @@ export const BattleArena: React.FC<BattleArenaProps> = ({
           </button>
         </div>
       ) : (
-        /* Battle Live Arena */
         <div className="space-y-4 bg-[#121526] border border-white/10 rounded-2xl p-4">
-          {/* Round Indicator */}
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <span className="font-gaming font-extrabold text-sm text-white">

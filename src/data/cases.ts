@@ -97,8 +97,6 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['diamond'], weight: 8 },
     ]
   },
-
-  // --- Resale NFT Кейсы (From Photos 3, 4, 5: 389 - 1321 ⭐) ---
   {
     id: 'case-nft-resale',
     name: 'Resale NFT Подарки',
@@ -147,8 +145,6 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['snoop-cigar'], weight: 8 },
     ]
   },
-
-  // --- Сопротивление & Fragment OG NFTs (Высший тир) ---
   {
     id: 'case-resistance-dog',
     name: 'Пёс Сопротивления (Fragment)',
@@ -173,8 +169,6 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['nft-doge'], weight: 3 },
     ]
   },
-
-  // --- 50 / 50 ---
   {
     id: 'case-5050-bear-cake',
     name: '50/50: Мишка или Торт',
@@ -247,8 +241,6 @@ export const ALL_CASES: CaseItem[] = [
       { item: ALL_GIFTS['trophy'], weight: 50 },
     ]
   },
-
-  // --- ЛЕКТОР & BLACK SPRUIT (Top Exclusive) ---
   {
     id: 'case-lector-bs',
     name: 'Lector Black Spruit VIP',
