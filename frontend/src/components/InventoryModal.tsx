@@ -280,7 +280,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                     autoCorrect="off"
                     autoComplete="off"
                     enterKeyHint="done"
-                    className="w-full bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 outline-none"
+                    className="w-full bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-base sm:text-xs text-white placeholder-gray-500 outline-none"
                   />
                   <div className="flex gap-2">
                     <button

@@ -92,8 +92,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
             autoCorrect="off"
             autoComplete="off"
             enterKeyHint="search"
-            className="w-full bg-[#131627] border border-white/10 focus:border-purple-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 outline-none transition-colors"
-            autoFocus
+            className="w-full bg-[#131627] border border-white/10 focus:border-purple-500 rounded-xl px-4 py-2.5 text-base sm:text-xs text-white placeholder-gray-500 outline-none transition-colors"
           />
           {searchQuery && (
             <button

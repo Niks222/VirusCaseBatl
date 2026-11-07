@@ -15,6 +15,7 @@
     user-select: text !important;
     -webkit-user-select: text !important;
     touch-action: manipulation !important;
+    font-size: 16px !important;
   }
 }
 

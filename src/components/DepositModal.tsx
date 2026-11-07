@@ -108,7 +108,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                   autoCorrect="off"
                   autoComplete="off"
                   enterKeyHint="go"
-                  className="flex-1 bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 outline-none uppercase font-mono"
+                  className="flex-1 bg-[#101222] border border-white/10 focus:border-purple-500 rounded-xl px-3 py-2 text-base sm:text-xs text-white placeholder-gray-500 outline-none uppercase font-mono"
                 />
                 <button
                   type="submit"

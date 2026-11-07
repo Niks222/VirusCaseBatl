@@ -358,6 +358,7 @@ export const App: React.FC = () => {
           onOpenDeposit={() => setIsDepositOpen(true)}
         />
       )}
+      </div>
 
       <BottomNav
         currentTab={currentTab}
@@ -369,7 +370,6 @@ export const App: React.FC = () => {
         }}
         inventoryCount={inventory.length}
       />
-      </div>
     </div>
   );
 };

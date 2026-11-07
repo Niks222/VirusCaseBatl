@@ -23,7 +23,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-[70] pointer-events-auto select-none bg-[#070913]/95 backdrop-blur-lg border-t border-white/[0.08] px-3 py-2 pb-5 md:pb-2">
+    <nav className="fixed bottom-0 inset-x-0 z-[999] pointer-events-auto select-none bg-[#070913]/98 backdrop-blur-xl border-t border-white/[0.1] px-3 py-2 pb-5 md:pb-2 shadow-[0_-10px_25px_rgba(0,0,0,0.7)]">
       <div className="max-w-md mx-auto flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -34,10 +34,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               key={item.id}
               type="button"
               onClick={() => {
-                soundFx.playClick();
                 onSelectTab(item.id as TabType);
+                try {
+                  soundFx.playClick();
+                } catch {}
               }}
-              className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition-all ${
+              className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition-all cursor-pointer select-none active:scale-95 ${
                 isActive ? 'text-white' : 'text-gray-400 hover:text-gray-200'
               }`}
             >

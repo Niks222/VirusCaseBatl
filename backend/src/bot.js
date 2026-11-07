@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard, InputFile } from 'grammy';
+import { Bot, InlineKeyboard, Keyboard, InputFile } from 'grammy';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -91,6 +91,23 @@ bot.command('start', async (ctx) => {
     keyboard.row().text('🛡 Панель Администратора', 'btn_admin_panel');
   }
 
+  const replyKeyboard = new Keyboard()
+    .webApp('⚡️ ИГРАТЬ В КЕЙСЫ (Mini App)', WEBAPP_URL)
+    .row()
+    .text('⚔️ Кейс Батлы')
+    .webApp('🎁 Мой Инвентарь', WEBAPP_URL)
+    .row()
+    .text('💎 Пополнить Stars')
+    .text('📦 Мои Заявки')
+    .row()
+    .text('👑 Промокод (+150 ⭐)')
+    .text('💬 Поддержка');
+
+  if (isAdm) {
+    replyKeyboard.row().text('🛡 Панель Администратора');
+  }
+  replyKeyboard.resized().persistent();
+
   const caption =
 `👑 <b>LECTOR CASES & BATTLES</b>
 <i>Официальный дроп-сервис Black Spruit</i>
@@ -130,6 +147,13 @@ bot.command('start', async (ctx) => {
       parse_mode: 'HTML',
       reply_markup: keyboard,
     });
+  }
+
+  try {
+    await ctx.reply('Используйте меню внизу для быстрого перехода:', {
+      reply_markup: replyKeyboard,
+    });
+  } catch {
   }
 });
 
@@ -365,6 +389,53 @@ bot.command('help', async (ctx) => {
     `4. <b>Поддержка:</b> @Lector_BS_Support`,
     { parse_mode: 'HTML' }
   );
+});
+
+bot.hears('⚔️ Кейс Батлы', async (ctx) => {
+  const keyboard = new InlineKeyboard().webApp('⚔️ Войти в Арену Батлов', WEBAPP_URL);
+  await ctx.reply('⚔️ <b>РЕЖИМ КЕЙС БАТЛОВ</b>\n\nСражайся 1 на 1 против других игроков и забирай все подарки!', { parse_mode: 'HTML', reply_markup: keyboard });
+});
+
+bot.hears('💎 Пополнить Stars', async (ctx) => {
+  const keyboard = new InlineKeyboard().webApp('💎 Открыть Кассу (Mini App)', WEBAPP_URL);
+  await ctx.reply('💎 <b>ПОПОЛНЕНИЕ БАЛАНСА STARS</b>\n\nКурс: <b>1 ⭐ = 1.5 ₽</b>\nПополняйте баланс прямо в приложении!', { parse_mode: 'HTML', reply_markup: keyboard });
+});
+
+bot.hears('📦 Мои Заявки', async (ctx) => {
+  const userId = String(ctx.from?.id);
+  const pendings = getPendingWithdrawals().filter((w) => String(w.user_id) === userId);
+  if (pendings.length === 0) {
+    const keyboard = new InlineKeyboard().webApp('🎁 Открыть Инвентарь', WEBAPP_URL);
+    return ctx.reply('У вас пока нет активных заявок на вывод. Выводите подарки из Инвентаря (от 361 ⭐)!', { reply_markup: keyboard });
+  }
+  let text = '📦 <b>ВАШИ АКТИВНЫЕ ЗАЯВКИ НА ВЫВОД:</b>\n\n';
+  for (const p of pendings) {
+    text += `• #${p.id} — <b>${p.item_name}</b> (${p.item_price} ⭐) [В обработке ⏳]\n`;
+  }
+  await ctx.reply(text, { parse_mode: 'HTML' });
+});
+
+bot.hears('👑 Промокод (+150 ⭐)', async (ctx) => {
+  const keyboard = new InlineKeyboard().webApp('🚀 Активировать в игре', WEBAPP_URL);
+  await ctx.reply('🎁 <b>ПРОМОКОД ЛЕКТОРА</b>\n\nВведи в игре: <code>LECTOR</code>\nИ получи мгновенно <b>+150 ⭐</b> на баланс!', { parse_mode: 'HTML', reply_markup: keyboard });
+});
+
+bot.hears('💬 Поддержка', async (ctx) => {
+  await ctx.reply('💬 <b>СЛУЖБА ПОДДЕРЖКИ LECTOR CASES</b>\n\nПо всем вопросам пишите: @Lector_BS_Support', { parse_mode: 'HTML' });
+});
+
+bot.hears('🛡 Панель Администратора', async (ctx) => {
+  const userId = ctx.from?.id;
+  if (!checkIsAdmin(userId)) {
+    return ctx.reply('⛔️ У вас нет прав доступа к админ-панели.');
+  }
+  const stats = getStats();
+  const text = `🛡 <b>ПАНЕЛЬ АДМИНИСТРАТОРА LECTOR CASES</b>\n\n📊 <b>Статистика:</b>\n• Пользователей: <b>${stats.totalUsers}</b>\n• Заявок на вывод: <b>${stats.pendingWithdrawals}</b>\n• Открыто кейсов: <b>${stats.totalOpened}</b>\n• Выигрышей: <b>${Math.round(stats.totalWonStars)} ⭐</b>`;
+  const keyboard = new InlineKeyboard()
+    .text(`📋 Заявки на вывод (${stats.pendingWithdrawals})`, 'admin_view_pending')
+    .row()
+    .text('🔄 Обновить', 'btn_admin_panel');
+  await ctx.reply(text, { parse_mode: 'HTML', reply_markup: keyboard });
 });
 
 bot.on('pre_checkout_query', async (ctx) => {
