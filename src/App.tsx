@@ -21,12 +21,32 @@ export const App: React.FC = () => {
 
   const [currency, setCurrency] = useState<'stars' | 'rub'>('stars');
   const [balanceStars, setBalanceStars] = useState<number>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reset = params.get('reset');
+    if (reset === 'all' || reset === 'stars') {
+      localStorage.setItem('lector_balance_stars', '0');
+      return 0;
+    }
+    const urlStars = params.get('stars');
+    if (urlStars !== null && !isNaN(Number(urlStars))) {
+      const parsed = Number(urlStars);
+      if (parsed > 0) {
+        localStorage.setItem('lector_balance_stars', parsed.toString());
+        return parsed;
+      }
+    }
     const saved = localStorage.getItem('lector_balance_stars');
     return saved !== null ? Number(saved) : 0;
   });
   const balanceRub = Math.round(balanceStars * 1.5);
 
   const [inventory, setInventory] = useState<InventoryItem[]>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reset = params.get('reset');
+    if (reset === 'all' || reset === 'items') {
+      localStorage.setItem('lector_inventory', '[]');
+      return [];
+    }
     try {
       const saved = localStorage.getItem('lector_inventory');
       if (saved) return JSON.parse(saved);
