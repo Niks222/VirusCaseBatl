@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, CreditCard, Star, ShieldCheck, Tag } from 'lucide-react';
+import { X, Sparkles, CreditCard, Star, ShieldCheck, Tag, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../utils/audio';
 
@@ -23,12 +23,12 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const [selectedPackIndex, setSelectedPackIndex] = useState(1);
 
   const starPacks = [
-    { stars: 50, rub: 75, bonus: '+0 ⭐' },
-    { stars: 150, rub: 225, bonus: '+15 ⭐ БОНУС', popular: true },
-    { stars: 350, rub: 525, bonus: '+50 ⭐ БОНУС' },
-    { stars: 750, rub: 1125, bonus: '+120 ⭐ БОНУС' },
-    { stars: 1500, rub: 2250, bonus: '+300 ⭐ БОНУС' },
-    { stars: 5000, rub: 7500, bonus: '+1500 ⭐ VIP' },
+    { stars: 50, usd: '0.75', rub: 75, bonus: '+0 ⭐' },
+    { stars: 150, usd: '2.25', rub: 225, bonus: '+15 ⭐ ХИТ', popular: true },
+    { stars: 350, usd: '5.25', rub: 525, bonus: '+50 ⭐' },
+    { stars: 750, usd: '11.25', rub: 1125, bonus: '+120 ⭐' },
+    { stars: 1500, usd: '22.50', rub: 2250, bonus: '+300 ⭐' },
+    { stars: 5000, usd: '75.00', rub: 7500, bonus: '+1500 ⭐ VIP' },
   ];
 
   const handleApplyPromo = (e: React.FormEvent) => {
@@ -45,14 +45,21 @@ export const DepositModal: React.FC<DepositModalProps> = ({
     }
   };
 
+  const handleCryptoDepositClick = () => {
+    const pack = starPacks[selectedPackIndex];
+    soundFx.playWin('rare');
+    const botUrl = `https://t.me/LectorCaseBatlebot?start=crypto_${pack.stars}`;
+    if (window.Telegram?.WebApp?.openTelegramLink) {
+      window.Telegram.WebApp.openTelegramLink(botUrl);
+    } else {
+      window.open(botUrl, '_blank');
+    }
+    onClose();
+  };
+
   const handleDepositClick = () => {
     const pack = starPacks[selectedPackIndex];
     soundFx.playWin('rare');
-
-    if (window.Telegram?.WebApp?.openInvoice) {
-      console.log('Opening Telegram Invoice...');
-    }
-
     onAddBalance(currency === 'stars' ? pack.stars : pack.rub, currency);
     alert(`Успешно начислено +${currency === 'stars' ? `${pack.stars} ⭐` : `${pack.rub} ₽`} на ваш баланс!`);
     onClose();
@@ -60,7 +67,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 pb-16 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh]">
+      <div className="relative w-full max-w-md bg-[#111425] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#161a30]">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
@@ -154,7 +161,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between text-xs mt-1">
-                      <span className="font-bold text-amber-300">{pack.rub} ₽</span>
+                      <span className="font-bold text-amber-300">{pack.rub} ₽ <span className="text-[10px] text-gray-400">($${pack.usd})</span></span>
                       <span className="text-[10px] text-purple-300 font-bold">{pack.bonus}</span>
                     </div>
                   </div>
@@ -165,20 +172,25 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#14172a] border border-white/5 text-[11px] text-gray-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Официальные платежи Telegram Stars и быстрый вывод призов на аккаунт.</span>
+            <span>Принимаются крипта через @send (USDT, TON, BTC) и Telegram Stars.</span>
           </div>
 
-          <button
-            onClick={handleDepositClick}
-            className="w-full py-3.5 rounded-2xl font-gaming font-extrabold text-sm uppercase tracking-wider text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 active:scale-98 shadow-xl shadow-purple-600/30 border border-purple-400/40 flex items-center justify-center gap-2"
-          >
-            <span>
-              Пополнить на{' '}
-              {currency === 'stars'
-                ? `${starPacks[selectedPackIndex].stars} ⭐`
-                : `${starPacks[selectedPackIndex].rub} ₽`}
-            </span>
-          </button>
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={handleCryptoDepositClick}
+              className="w-full py-3.5 rounded-2xl font-gaming font-extrabold text-xs sm:text-sm uppercase tracking-wider text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 active:scale-98 shadow-xl shadow-blue-600/30 border border-blue-400/40 flex items-center justify-center gap-2"
+            >
+              <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+              <span>Оплатить в @send ($${starPacks[selectedPackIndex].usd}) • USDT, TON</span>
+            </button>
+
+            <button
+              onClick={handleDepositClick}
+              className="w-full py-2.5 rounded-2xl font-gaming font-bold text-xs uppercase tracking-wider text-gray-300 bg-white/5 hover:bg-white/10 active:scale-98 border border-white/10 flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <span>Оплатить Stars ({starPacks[selectedPackIndex].stars} ⭐)</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

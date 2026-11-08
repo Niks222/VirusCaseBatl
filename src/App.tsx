@@ -265,7 +265,7 @@ export const App: React.FC = () => {
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex justify-center items-end opacity-[0.28]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,#070913_78%)]" />
         <img
-          src="assets/lector_mascot_real.png?v=3"
+          src="assets/lector_cutout.png?v=20261108"
           alt=""
           className="h-[88vh] max-h-[860px] object-contain object-bottom filter drop-shadow-[0_0_60px_rgba(168,85,247,0.35)] select-none"
         />
